@@ -142,19 +142,19 @@ export const asyncRoutes = [
     path: '/usermgt',
     component: Layout,
     alwaysShow: true,
-    meta: { title: '用户管理', icon: 'user', noCache: true },
+    meta: { title: '用户管理', icon: 'user'},
     children: [
       {
         path: 'users',
-        component: () => import('@/views/icons/index'),
-        name: 'users',
-        meta: { title: '用户信息', icon: 'edit', noCache: true }
+        component: () => import('@/views/user/user-list'),
+        name: 'Users',
+        meta: { title: '用户信息', icon: 'edit', noCache: false }
       },
       {
         path: 'groups',
-        component: () => import('@/views/icons/index'),
-        name: 'groups',
-        meta: { title: '公司信息', icon: 'edit', noCache: true }
+        component: () => import('@/views/user/group-list'),
+        name: 'Groups',
+        meta: { title: '公司信息', icon: 'edit'}
       }
     ]
   },
@@ -167,13 +167,13 @@ export const asyncRoutes = [
       {
         path: 'site',
         alwaysShow: true,
-        name: 'site',
+        name: 'Site',
         meta: { title: '企业建站', icon: 'edit', noCache: true },
         children: [
           {
             path: 'image',
             component: () => import('@/views/icons/index'),
-            name: 'image',
+            name: 'Image',
             meta: { title: '图库管理', icon: 'edit', noCache: true }
           }
         ]
@@ -181,7 +181,7 @@ export const asyncRoutes = [
       {
         path: 'oa',
         component: () => import('@/views/icons/index'),
-        name: 'oa',
+        name: 'OA',
         meta: { title: 'OA', icon: 'edit', noCache: true }
       }
     ]

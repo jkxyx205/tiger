@@ -20,6 +20,16 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
+import VueLazyload from 'vue-lazyload'
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'dist/error.png',
+  loading: '/loading.gif',
+  attempt: 1
+})
+
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -34,7 +44,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium', // set element-ui default size
+  size: Cookies.get('size') || 'medium' // set element-ui default size
   // locale
 })
 

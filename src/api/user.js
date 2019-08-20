@@ -27,3 +27,10 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function changeStatus(id) {
+  return request({
+    url: `/api/tiger/platform/users/${id}/changeStatus`,
+    method: 'put'
+  })
+}

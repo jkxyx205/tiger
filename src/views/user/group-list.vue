@@ -32,7 +32,9 @@
       </el-table-column>
       <el-table-column label="管理员" width="180px" align="center">
         <template slot-scope="{row}">
-          <span :title="row.adminName">{{ row.adminName }}</span>
+          <el-link type="info" @click="userInfo(row.adminUserId)">
+            <span :title="row.adminName">{{ row.adminName }}</span>
+          </el-link>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="210px" align="center" sortable="custome" prop="createDate">
@@ -53,6 +55,36 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total > 0" :total="total" :page.sync="queryModel.page" :limit.sync="queryModel.size" @pagination="query" />
+    <el-dialog
+      title="管理员详情"
+      :visible.sync="dialogVisible"
+      width="500px"
+    >
+      <div class="admin-info-container">
+        <div class="avatar">
+          <img v-lazy="user.avatar" alt="" class="avatar">
+        </div>
+        <div class="label-info-container">
+          <div>
+            <div class="display-item">
+              <label>名字：</label><span>{{ user.nickname }}</span>
+            </div>
+            <div class="display-item">
+              <label>性别：</label><span>{{ user.sex | sex }}</span>
+            </div>
+            <div class="display-item">
+              <label>手机：</label><span>{{ user.mobile }}</span>
+            </div>
+            <div class="display-item">
+              <label>签名：</label><span>{{ user.signature }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -61,12 +93,16 @@ import * as Dict from '@/utils/dictionary-getter'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { changeStatus } from '@/api/group'
+import { getUserById } from '@/api/user'
 
 export default {
   name: 'Groups',
   components: { Pagination },
   directives: { waves },
   filters: {
+    sex(value) {
+      return Dict.getLabel(Dict.SEX_TYPE, value)
+    },
     status(value) {
       return Dict.getLabel(Dict.STATUS_TYPE, value)
     }
@@ -77,9 +113,11 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      dialogVisible: false,
       dataSource: {
         status: Dict.getData(Dict.STATUS_TYPE)
       },
+      user: {},
       queryModel: {
         locked: '',
         name: '',
@@ -123,6 +161,12 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    userInfo(userId) {
+      getUserById(userId).then(res => {
+        this.user = res.data
+        this.dialogVisible = true
+      })
     }
   }
 }
@@ -130,6 +174,25 @@ export default {
 <style lang="scss" scoped>
 .table-container {
   padding: 30px 20px;
+}
+
+.admin-info-container {
+  .avatar {
+    text-align: center;
+    margin-bottom: 24px;
+    img {
+      height: width;
+    }
+  }
+  .display-item {
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .label-info-container {
+    display: flex;
+    padding: 0 16%;
+    justify-content: center;
+  }
 }
 </style>
 <style>

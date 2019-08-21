@@ -34,3 +34,10 @@ export function changeStatus(id) {
     method: 'put'
   })
 }
+
+export function getUserById(id) {
+  return request({
+    url: `/api/tiger/platform/users/${id}`,
+    method: 'get'
+  })
+}

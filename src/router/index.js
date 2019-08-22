@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Service from './modules/service'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -112,32 +113,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/service',
-    component: Layout,
-    alwaysShow: true,
-    meta: { title: '服务中心', icon: 'component', noCache: true },
-    children: [
-      {
-        path: 'job',
-        component: () => import('@/views/icons/index'),
-        name: 'Job',
-        meta: { title: '工单管理', icon: 'edit', noCache: true }
-      },
-      {
-        path: 'order',
-        component: () => import('@/views/icons/index'),
-        name: 'Order',
-        meta: { title: '订单管理', icon: 'edit', noCache: true }
-      },
-      {
-        path: 'deploy',
-        component: () => import('@/views/icons/index'),
-        name: 'Deploy',
-        meta: { title: '部署清单', icon: 'edit', noCache: true }
-      }
-    ]
-  },
+  Service,
   {
     path: '/usermgt',
     component: Layout,

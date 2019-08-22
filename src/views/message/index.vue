@@ -40,7 +40,7 @@
       </el-row>
       <el-form-item label="收息用户" prop="destinations">
         <el-select v-model="form.destinations" multiple placeholder="请选择接消息收用户">
-          <el-option v-for="destination in datasource.destinations" :key="destination.id" :label="destination.name" :value="destination.id" />
+          <el-option v-for="destination in datasource.destinations" :key="destination.id" :label="destination.nickname" :value="destination.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="发送次数" prop="iterationCount">
@@ -58,6 +58,8 @@ import Tinymce from '@/components/Tinymce'
 import { Message } from 'element-ui'
 import { sendMessage } from '@/api/message'
 import CBMapping from '@/utils/cpn-business-mapping'
+import { list } from '@/api/group'
+import { dict } from '@/api/group'
 
 export default {
   name: 'Message',
@@ -65,20 +67,11 @@ export default {
     Tinymce
   },
   data() {
-    // const _this = this
-    // var instanceIdValidator = (rule, value, callback) => {
-    //   if (_this.form.groupId === 0 || value) {
-    //     callback()
-    //   } else {
-    //     callback(new Error('请输入实例id'))
-    //   }
-    // }
-
     return {
       form: {
         sendUrl: 'http://localhost:8769/ws/messages',
         title: '恭喜你注册，Hi',
-        groupId: 0, // 所属公司
+        groupId: undefined, // 所属公司
         componentId: 1, // 组件id
         businessId: 10,
         instanceId: null,
@@ -93,10 +86,6 @@ export default {
           {
             id: 0,
             name: '系统消息'
-          },
-          {
-            id: 156585531842015,
-            name: '苏州点研智能'
           }
         ],
         components: [
@@ -105,22 +94,16 @@ export default {
             name: '企业建站'
           }
         ],
-        destinations: [
-          {
-            id: '156585531841902-156585531842120',
-            name: 'good'
-          },
-          {
-            id: '156585531841901-156585531842121',
-            name: 'bad'
-          }
-        ]
+        destinations: []
       },
       rules: {
         sendUrl: [
           { required: true, message: '请输入发送地址', trigger: 'blur' }
         ],
         title: [
+          { required: true, message: '请输入消息标题', trigger: 'blur' }
+        ],
+        groupId: [
           { required: true, message: '请输入消息标题', trigger: 'blur' }
         ],
         content: [
@@ -157,7 +140,19 @@ export default {
       } else {
         this.rules.instanceId = commonRules.concat(requiredRule)
       }
+
+      dict(this.groupId).then(res => {
+        this.datasource.destinations = res.data
+      })
     }
+  },
+  created() {
+    this.$nextTick(() => {
+      list().then(res => {
+        this.datasource.groups = this.datasource.groups.concat(res.data.rows)
+      })
+      this.form.groupId = 0
+    })
   },
   methods: {
     submitForm(formName) {

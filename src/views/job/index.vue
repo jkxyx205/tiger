@@ -1,15 +1,20 @@
 <template>
   <div class="table-container">
     <el-form ref="queryModel" :inline="true" :model="queryModel" @keyup.enter.native="handleFilter">
-      <el-form-item prop="mobile">
-        <el-input v-model="queryModel.mobile" placeholder="帐号" style="width: 200px;" class="filter-item" />
+      <el-form-item prop="id">
+        <el-input v-model="queryModel.id" placeholder="工单编号" style="width: 200px;" class="filter-item" />
       </el-form-item>
-      <el-form-item prop="nickname">
-        <el-input v-model="queryModel.nickname" placeholder="名字" style="width: 200px;" class="filter-item" />
-      </el-form-item>
-      <el-form-item prop="locked">
-        <el-select v-model="queryModel.locked" style="width: 140px" class="filter-item" placeholder="状态" @change="handleFilter">
+      <!-- <el-form-item prop="nickname">
+        <el-input v-model="queryModel.nickname" placeholder="昵称" style="width: 200px;" class="filter-item" />
+      </el-form-item> -->
+      <el-form-item prop="jobStatus">
+        <el-select v-model="queryModel.jobStatus" style="width: 140px" class="filter-item" placeholder="工单状态" @change="handleFilter">
           <el-option v-for="(value, key) in dataSource.status" :key="key" :label="value" :value="key" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="jobType">
+        <el-select v-model="queryModel.jobType" style="width: 140px" class="filter-item" placeholder="工单类型" @change="handleFilter">
+          <el-option v-for="(value, key) in dataSource.type" :key="key" :label="value" :value="key" />
         </el-select>
       </el-form-item>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
@@ -26,37 +31,31 @@
       cell-class-name="tb-cell"
       @sort-change="sort"
     >
-      <el-table-column prop="mobile" label="帐号" align="center" width="120" />
-      <el-table-column prop="nickname" label="名字" width="150px" align="center" />
-      <el-table-column label="头像" width="60px" align="center">
+      <el-table-column prop="id" label="工单编号" align="center" width="200" />
+      <el-table-column prop="title" label="问题描述" />
+      <el-table-column label="工服类型" width="100px" align="center">
         <template slot-scope="{row}">
-          <img v-lazy="row.avatar" alt="" style="width: 23px;">
+          <span>{{ row.jobType | type() }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别" width="60px" align="center">
+      <el-table-column label="状态" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.sex | sex() }}</span>
+          <span :class="'circle-job-status-' + row.jobStatus">{{ row.jobStatus | status() }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="signature" label="签名">
+      <el-table-column prop="updateDate" label="更新时间" width="210px" align="center" sortable="custome">
         <template slot-scope="{row}">
-          <span :title="row.signature">{{ row.signature }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="注册时间" width="210px" align="center" sortable="custome" prop="createDate">
-        <template slot-scope="{row}">
-          <span>{{ row.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span :style="row.locked ? 'color: #F56C6C' : 'color:#67C23A'">{{ row.locked & 1 | status() }}</span>
+          <span>{{ row.updateDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="90px" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-          <el-button v-if="!row.locked" size="mini" type="danger" @click="changeStatus(row)">禁用</el-button>
-          <el-button v-else size="mini" type="success" @click="changeStatus(row)">启用</el-button>
+        <template slot-scope="scope">
+          <!-- <el-button size="mini" type="success">查看详情</el-button> -->
+          <router-link :to="'/service/job/detail/'+scope.row.id">
+            <el-button type="primary" size="small" icon="el-icon-edit">
+              详情
+            </el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -67,20 +66,18 @@
 import ListQuery from '@/utils/list-query'
 import * as Dict from '@/utils/dictionary-getter'
 import waves from '@/directive/waves' // waves directive
-// import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { changeStatus } from '@/api/user'
 
 export default {
-  name: 'Users',
+  name: 'JobList',
   components: { Pagination },
   directives: { waves },
   filters: {
-    sex(value) {
-      return Dict.getLabel(Dict.SEX_TYPE, value)
-    },
     status(value) {
-      return Dict.getLabel(Dict.STATUS_TYPE, value)
+      return Dict.getLabel(Dict.JOB_STATUS_TYPE, value)
+    },
+    type(value) {
+      return Dict.getLabel(Dict.JOB_TYPE, value)
     }
   },
   data() {
@@ -90,22 +87,23 @@ export default {
       total: 0,
       listLoading: true,
       dataSource: {
-        status: Dict.getData(Dict.STATUS_TYPE)
+        status: Dict.getData(Dict.JOB_STATUS_TYPE),
+        type: Dict.getData(Dict.JOB_TYPE)
       },
       queryModel: {
-        locked: '',
-        nickname: '',
-        mobile: '',
+        jobStatus: '',
+        jobType: '',
+        id: '',
         page: 1,
         size: 10,
-        sidx: 'createDate',
+        sidx: 'updateDate',
         sord: 'desc'
       }
     }
   },
   created() {
     this.$nextTick(() => {
-      this.listQuery = new ListQuery('/api/tiger/platform/users/list')
+      this.listQuery = new ListQuery('/api/tiger/platform/jobs')
       this.query()
     })
   },
@@ -122,13 +120,6 @@ export default {
         this.listLoading = false
       })
     },
-    changeStatus(user) {
-      this.listLoading = true
-      changeStatus(user.id).then(res => {
-        user.locked = !user.locked
-        this.listLoading = false
-      })
-    },
     sort({ column, prop, order }) {
       this.queryModel.sidx = prop
       this.queryModel.sord = (order === 'ascending' ? 'asc' : 'desc')
@@ -141,6 +132,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/styles/platform/service/job.scss";
 .table-container {
   padding: 30px 20px;
 }

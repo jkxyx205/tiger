@@ -11,13 +11,14 @@
         <div class="data-item">
           <label>状态:</label><span :class="'circle-job-status-' + job.jobStatus">{{ job.jobStatus | status }}</span>
         </div>
-        <div class="pull-right operator-bar">
-          <el-button size="small">确认完成</el-button>
+        <div v-if="over" class="pull-right operator-bar">
+          <el-button v-if="job.jobStatus === 0 || job.jobStatus === 1" size="small" @click="makeFinished()">处理完成</el-button>
+          <el-button v-if="job.jobStatus === 2" size="small" @click="reDo()">重新处理</el-button>
         </div>
       </div>
       <div class="job-master-container-body">
         <div class="data-item">
-          <label>问题描述:</label><span>{{ job.title }}</span>
+          <label>问题描述:</label><span>{{ job.description }}</span>
         </div>
       </div>
       <div class="job-master-container-footer">
@@ -28,11 +29,11 @@
           <label>联系电话:</label><span>{{ job.contactNumber }}</span>
         </div>
         <div class="data-item">
-          <label>所属公司:</label><span>{{ job.groupId }}</span>
+          <label>所属公司:</label><span>{{ job.groupName }}</span>
         </div>
         <div class="pull-right">
           <div class="data-item">
-            <label>提交人:</label><span>{{ job.createBy }}</span>
+            <label>提交人:</label><span>{{ job.creatorName }}</span>
           </div>
           <div class="data-item">
             <label>创建时间:</label><span>{{ job.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -41,49 +42,43 @@
       </div>
     </div>
     <div class="work-flow-container">
-      <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+      <el-tabs v-model="activeName" type="border-card">
         <el-tab-pane label="沟通纪录" name="log">
-          <div class="tab-log-container contact-list-container">
-            <ul>
-              <li v-for="log in job.logList" :key="log.id" class="contact-item">
-                <div class="user-info">
-                  <img v-lazy="log.avatar" class="user-avatar">
-                  <div class="user-name">{{ log.name }}</div>
-                </div>
-                <div class="content-info">
-                  <p>{{ log.title }}</p>
-                  <div class="content-date"><span>{{ log.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span></div>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <log :logs="job.logList" />
         </el-tab-pane>
-        <el-tab-pane label="订单单据" name="order">订单单据</el-tab-pane>
-        <el-tab-pane label="部署单据" name="deploy">部署单据</el-tab-pane>
+        <template v-if="job.jobType === 2">
+          <el-tab-pane label="订单单据" name="order">订单单据</el-tab-pane>
+          <el-tab-pane label="部署单据" name="deploy">部署单据</el-tab-pane>
+        </template>
       </el-tabs>
     </div>
-    <div class="feedback">
+    <div v-if="over" class="feedback">
       <div class="feedback-header border">
         <span>我要反馈</span>
       </div>
       <div class="feedback-content">
         <el-form ref="feedback" :model="feedback" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="反馈内容" prop="title">
-            <el-input v-model="feedback.title" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入反馈内容" />
+          <el-form-item label="反馈内容" prop="description">
+            <el-input v-model="feedback.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入反馈内容" />
           </el-form-item>
           <el-form-item>
             <el-upload
+              ref="upload"
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-change="handleChange"
-              :file-list="fileList"
+              :multiple="true"
+              action="http://etmode.com:8500/documents/upload"
+              :limit="5"
+              :on-exceed="exceed"
+              :on-success="success"
+              :before-upload="beforeUpload"
+              :on-change="change"
             >
-              <el-button size="small" type="default">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <el-button size="small" type="default">📎附件上传</el-button>
+              <span slot="tip" class="el-upload__tip" style="margin-left: 8px;">最多上传5个附件，每个附件大小不超过8M</span>
             </el-upload>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">发送</el-button>
+            <el-button :loading="saving" type="primary" :disabled="feedback.description.trim().length === 0" @click="submitForm('feedback')">发送</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -92,8 +87,15 @@
 </template>
 
 <script>
-import { findDetailById } from '@/api/platform/service/job'
+import { findDetailById, feedback, changeStatus, listLogs } from '@/api/platform/service/job'
 import * as Dict from '@/utils/dictionary-getter'
+import { mapGetters } from 'vuex'
+import Log from '@/components/Log'
+
+const PROCESSING_STATUS = '1'
+const MAKE_FINISHED_STATUS = '2'
+const UPLOAD_MAX_SIZE = 8 // M
+
 export default {
   name: 'JobDetail',
   filters: {
@@ -104,27 +106,34 @@ export default {
       return Dict.getLabel(Dict.JOB_TYPE, value)
     }
   },
+  components: {
+    Log
+  },
   data() {
     return {
+      saving: false,
       id: this.$route.params.id,
       job: {},
       activeName: 'log',
+      fileList: [],
       feedback: {
-        title: ''
+        description: '',
+        attachments: ''
       },
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }],
       rules: {
-        title: [
+        description: [
           { required: true, message: '请输入反馈内容', trigger: 'blur' },
-          { min: 10, max: 500, message: '长度在 10 到 500 个字符', trigger: 'blur' }
+          { min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur' }
         ]
       }
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userId'
+    ]),
+    over() {
+      return this.job.jobStatus === 0 || this.job.jobStatus === 1 || this.job.jobStatus === 2
     }
   },
   created() {
@@ -133,14 +142,73 @@ export default {
     })
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event)
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.saving = true
+          this.feedback.attachments = this._normalize2JSONAttachment()
+          feedback(this.job.id, this.feedback, this.userId).then(res => {
+            this.job.logList.push(res.data)
+            this._resetForm()
+            this.saving = false
+            this.$message.success('反馈发送成功')
+          })
+        } else {
+          return false
+        }
+      })
     },
-    submitForm(form) {
-      console.log('')
+    makeFinished() {
+      this._changeStatus(MAKE_FINISHED_STATUS)
     },
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3)
+    reDo() {
+      this._changeStatus(PROCESSING_STATUS)
+    },
+    success(response, file, fileList) {
+      this.fileList = fileList
+    },
+    change(file, fileList) {
+      // 执行2次
+    },
+    beforeUpload(file) {
+      if (file.size > UPLOAD_MAX_SIZE * 1024 * 1024) {
+        this.$message.error(`文件最大不能超过${UPLOAD_MAX_SIZE}M`)
+        return false
+      }
+      return true
+    },
+    exceed(files, fileList) {
+      this.$message.warning(`当前限制选择5个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    _refreshLog() {
+      listLogs(this.job.id).then(res => {
+        this.job.logList = res.data
+      })
+    },
+    _changeStatus(status) {
+      changeStatus(this.job.id, status).then(res => {
+        this.job.jobStatus = res.data
+        this._refreshLog()
+      })
+    },
+    _resetForm() {
+      this.feedback.description = ''
+      this.feedback.attachments = ''
+      this.$refs.upload.clearFiles()
+      this.fileList = []
+    },
+    _normalize2JSONAttachment() {
+      const attachments = []
+      if (this.fileList.length > 0) {
+        this.fileList.forEach(item => {
+          const fileInfo = item.response.data[0]
+          attachments.push({
+            id: fileInfo.id,
+            name: fileInfo.fullName
+          })
+        })
+      }
+      return JSON.stringify(attachments)
     }
   }
 }
@@ -161,7 +229,7 @@ export default {
   & > div {
     margin-bottom: 24px;
   }
-  color: #909399;
+  color: #2c3e50;
   font-size: 14px;
 }
 
@@ -178,7 +246,7 @@ export default {
   }
 
   &-body {
-    line-height: 60px;
+    line-height: 80px;
     border-top: 1px solid #DCDFE6;
     border-bottom: 1px solid #DCDFE6;
     overflow: hidden;
@@ -188,51 +256,6 @@ export default {
   &-footer {
     background: #f5f7fa;
     line-height: 40px;
-  }
-}
-
-.contact-list-container {
-  $info-width: 120px;
-  $avatar-width: 30px;
-  padding: 20px;
-  .contact-item {
-    position: relative;
-    &:not(:last-child) {
-      margin-bottom: 16px;
-    }
-  }
-  .user-info {
-    position: absolute;
-    top: -4px;
-    padding-left:$avatar-width + 4px;
-    width: $info-width;
-    line-height: $avatar-width;
-    .user-avatar {
-      position: absolute;
-      left: 0;
-      display: block;
-      width: $avatar-width;
-      height: $avatar-width;
-      vertical-align: middle;
-      padding: 2px;
-      border-radius: 50%;
-      box-shadow: 0 0 15px 0 rgba(81,111,234,.2);
-    }
-    .user-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-  .content-info {
-    margin-left: $info-width + 8px;
-    line-height: 1.6;
-
-    .content-date {
-      margin-top: 8px;
-      color: #909399;
-      font-size: 13px;
-    }
   }
 }
 

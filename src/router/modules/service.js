@@ -4,7 +4,8 @@ export default {
   path: '/service',
   component: Layout,
   alwaysShow: true,
-  meta: { title: '服务中心', icon: 'component'},
+  redirect: '/service/job',
+  meta: { title: '服务中心', icon: 'component' },
   children: [
     {
       path: 'job',

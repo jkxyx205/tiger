@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       form: {
-        sendUrl: 'http://localhost:8769/ws/messages',
+        sendUrl: `${process.env.VUE_APP_BASE_API2}/ws/messages`,
         title: '恭喜你注册，Hi',
         groupId: undefined, // 所属公司
         componentId: 1, // 组件id

@@ -12,6 +12,8 @@
           <label>状态:</label><span :class="'circle-job-status-' + job.jobStatus">{{ job.jobStatus | status }}</span>
         </div>
         <div v-if="over" class="pull-right operator-bar">
+          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 2" size="small" @click="makeOrderDialog()">创建订单</el-button>
+          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 2" size="small" @click="makeDeployDialog()">创建部署单</el-button>
           <el-button v-if="job.jobStatus === 0 || job.jobStatus === 1" size="small" @click="makeFinished()">处理完成</el-button>
           <el-button v-if="job.jobStatus === 2" size="small" @click="reDo()">重新处理</el-button>
         </div>
@@ -71,7 +73,6 @@
               :on-exceed="exceed"
               :on-success="success"
               :before-upload="beforeUpload"
-              :on-change="change"
             >
               <el-button size="small" type="default">📎附件上传</el-button>
               <span slot="tip" class="el-upload__tip" style="margin-left: 8px;">最多上传5个附件，每个附件大小不超过8M</span>
@@ -83,6 +84,8 @@
         </el-form>
       </div>
     </div>
+    <create-order ref="createOrder" :job="job" @create-success="refreshLog" />
+    <create-deploy ref="createDeploy" :job="job" />
   </div>
 </template>
 
@@ -91,6 +94,8 @@ import { findDetailById, feedback, changeStatus, listLogs } from '@/api/platform
 import * as Dict from '@/utils/dictionary-getter'
 import { mapGetters } from 'vuex'
 import Log from '@/components/Log'
+import CreateOrder from './components/CreateOrder'
+import CreateDeploy from './components/CreateDeploy'
 
 const PROCESSING_STATUS = '1'
 const MAKE_FINISHED_STATUS = '2'
@@ -107,7 +112,7 @@ export default {
     }
   },
   components: {
-    Log
+    Log, CreateOrder, CreateDeploy
   },
   data() {
     return {
@@ -167,8 +172,11 @@ export default {
     success(response, file, fileList) {
       this.fileList = fileList
     },
-    change(file, fileList) {
-      // 执行2次
+    makeOrderDialog() {
+      this.$refs.createOrder.openDialog()
+    },
+    makeDeployDialog() {
+      this.$refs.createDeploy.openDialog()
     },
     beforeUpload(file) {
       if (file.size > UPLOAD_MAX_SIZE * 1024 * 1024) {
@@ -179,6 +187,9 @@ export default {
     },
     exceed(files, fileList) {
       this.$message.warning(`当前限制选择5个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    refreshLog() {
+      this._refreshLog()
     },
     _refreshLog() {
       listLogs(this.job.id).then(res => {
@@ -216,20 +227,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/platform/service/job.scss";
-.data-item {
-  display: inline-block;
-  margin-right: 24px;
-  white-space: nowrap;
-  label {
-    margin-right: 8px;
-  }
-}
+
 .job-detail-container {
   padding: 30px 20px;
   & > div {
     margin-bottom: 24px;
   }
-  color: #2c3e50;
   font-size: 14px;
 }
 

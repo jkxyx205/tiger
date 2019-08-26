@@ -10,8 +10,8 @@
           <p>{{ log.description }}</p>
           <div class="content-file">
             <ul>
-              <li v-for="file in log.files">
-                <a :href="'http://etmode.com:8500/documents/download/' + file.id"><i class="el-icon-document"></i><span class="file-name" v-text="file.name"></span></a>
+              <li v-for="file in log.files" :key="file.id">
+                <a :href="'http://etmode.com:8500/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.name }}</span></a>
               </li>
             </ul>
           </div>

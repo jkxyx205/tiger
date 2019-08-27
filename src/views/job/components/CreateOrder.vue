@@ -77,6 +77,7 @@
 
 <script>
 import { createJobOrder } from '@/api/platform/service/order'
+import { add } from '@/utils/index'
 export default {
   props: {
     job: {
@@ -117,7 +118,7 @@ export default {
         if (!detail.price) {
           return sum
         }
-        sum += parseFloat(detail.price)
+        sum = add(sum, detail.price)
       })
       return sum
     }

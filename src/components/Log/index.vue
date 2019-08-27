@@ -15,7 +15,7 @@
               </li>
             </ul>
           </div>
-          <div class="content-date"><span>{{ log.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span></div>
+          <div class="content-date"><span>{{ log.createDate | formatTime() }}</span></div>
         </div>
       </li>
     </ul>

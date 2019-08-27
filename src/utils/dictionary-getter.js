@@ -3,6 +3,9 @@ export const STATUS_TYPE = 'SATUS_TYPE_GET'
 export const JOB_STATUS_TYPE = 'JOB_SATUS_TYPE_GET'
 export const JOB_TYPE = 'JOB_TYPE_GET'
 
+export const ORDER_TYPE = 'ORDER_TYPE_GET'
+export const ORDER_STATUS = 'ORDER_STATUS_GET'
+
 var mapping = {
   [SEX_TYPE]: {
     0: '男',
@@ -24,6 +27,15 @@ var mapping = {
     0: '系统故障',
     1: '建议反馈',
     2: '服务工单'
+  },
+  [ORDER_TYPE]: {
+    0: '服务订单',
+    1: '网站建设'
+  },
+  [ORDER_STATUS]: {
+    0: '待支付',
+    1: '已支付',
+    2: '已作废'
   }
 }
 

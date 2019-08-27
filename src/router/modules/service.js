@@ -22,13 +22,20 @@ export default {
     },
     {
       path: 'order',
-      component: () => import('@/views/icons/index'),
+      component: () => import('@/views/order/index'),
       name: 'Order',
       meta: { title: '订单管理', icon: 'edit', noCache: true }
     },
     {
+      path: 'order/detail/:id(\\d+)',
+      component: () => import('@/views/order/detail'),
+      name: 'OrderDetail',
+      meta: { title: '订单详情', icon: 'edit', noCache: true },
+      hidden: true
+    },
+    {
       path: 'deploy',
-      component: () => import('@/views/icons/index'),
+      component: () => import('@/views/deploy/index'),
       name: 'Deploy',
       meta: { title: '部署清单', icon: 'edit', noCache: true }
     }

@@ -7,3 +7,24 @@ export function createJobOrder(data) {
     data
   })
 }
+
+export function getJobOrderList(id) {
+  return request({
+    url: `/api/tiger/platform/order/jobs/${id}`,
+    method: 'get'
+  })
+}
+
+export function findDetailById(id) {
+  return request({
+    url: `/api/tiger/platform/order/${id}`,
+    method: 'get'
+  })
+}
+
+export function listLogs(orderId) {
+  return request({
+    url: `/api/tiger/platform/order/${orderId}/orderLogs`,
+    method: 'get'
+  })
+}

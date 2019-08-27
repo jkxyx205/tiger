@@ -3,7 +3,7 @@
     <div class="job-master-container border">
       <div class="job-master-container-header">
         <div class="data-item">
-          <label>单号:</label><span>{{ job.id }}</span>
+          <label>工单编号:</label><span>{{ job.id }}</span>
         </div>
         <div class="data-item">
           <label>类型:</label><span>{{ job.jobType | type }}</span>
@@ -49,7 +49,9 @@
           <log :logs="job.logList" />
         </el-tab-pane>
         <template v-if="job.jobType === 2">
-          <el-tab-pane label="订单单据" name="order">订单单据</el-tab-pane>
+          <el-tab-pane label="订单单据" name="order">
+            <order-list :order-list="job.orderList" />
+          </el-tab-pane>
           <el-tab-pane label="部署单据" name="deploy">部署单据</el-tab-pane>
         </template>
       </el-tabs>
@@ -84,16 +86,18 @@
         </el-form>
       </div>
     </div>
-    <create-order ref="createOrder" :job="job" @create-success="refreshLog" />
+    <create-order ref="createOrder" :job="job" @create-success="orderCreated()" />
     <create-deploy ref="createDeploy" :job="job" />
   </div>
 </template>
 
 <script>
 import { findDetailById, feedback, changeStatus, listLogs } from '@/api/platform/service/job'
+import { getJobOrderList } from '@/api/platform/service/order'
 import * as Dict from '@/utils/dictionary-getter'
 import { mapGetters } from 'vuex'
 import Log from '@/components/Log'
+import OrderList from './components/OrderList'
 import CreateOrder from './components/CreateOrder'
 import CreateDeploy from './components/CreateDeploy'
 
@@ -112,7 +116,7 @@ export default {
     }
   },
   components: {
-    Log, CreateOrder, CreateDeploy
+    Log, CreateOrder, CreateDeploy, OrderList
   },
   data() {
     return {
@@ -145,6 +149,9 @@ export default {
     findDetailById(this.id).then(res => {
       this.job = res.data
     })
+  },
+  mounted() {
+    setInterval(this._refreshLog, 1000 * 60)
   },
   methods: {
     submitForm(formName) {
@@ -188,12 +195,18 @@ export default {
     exceed(files, fileList) {
       this.$message.warning(`当前限制选择5个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
-    refreshLog() {
+    orderCreated() {
       this._refreshLog()
+      this._refreshOrder()
     },
     _refreshLog() {
       listLogs(this.job.id).then(res => {
         this.job.logList = res.data
+      })
+    },
+    _refreshOrder() {
+      getJobOrderList(this.job.id).then(res => {
+        this.job.orderList = res.data
       })
     },
     _changeStatus(status) {

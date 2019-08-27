@@ -1,5 +1,6 @@
 // import parseTime, formatTime and set to filter
 export { parseTime, formatTime } from '@/utils'
+import * as Dict from '@/utils/dictionary-getter'
 
 /**
  * Show plural label if time is plural number
@@ -65,4 +66,20 @@ export function toThousandFilter(num) {
  */
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+export function orderStatus(value) {
+  return Dict.getLabel(Dict.ORDER_STATUS, value)
+}
+
+export function orderType(value) {
+  return Dict.getLabel(Dict.ORDER_TYPE, value)
+}
+
+export function jobStatus(value) {
+  return Dict.getLabel(Dict.JOB_STATUS_TYPE, value)
+}
+
+export function jobType(value) {
+  return Dict.getLabel(Dict.JOB_TYPE, value)
 }

@@ -6,6 +6,8 @@ export const JOB_TYPE = 'JOB_TYPE_GET'
 export const ORDER_TYPE = 'ORDER_TYPE_GET'
 export const ORDER_STATUS = 'ORDER_STATUS_GET'
 
+export const REFUND_STATUS = 'REFUND_STATUS_GET'
+
 var mapping = {
   [SEX_TYPE]: {
     0: '男',
@@ -21,7 +23,7 @@ var mapping = {
     1: '处理中',
     2: '待确认完成',
     3: '已完成',
-    4: '已取消',
+    4: '已取消'
   },
   [JOB_TYPE]: {
     0: '系统故障',
@@ -36,6 +38,13 @@ var mapping = {
     0: '待支付',
     1: '已支付',
     2: '已作废'
+  },
+  [REFUND_STATUS]: {
+    0: '已提交',
+    1: '已拒绝',
+    2: '退款中',
+    3: '已退款',
+    4: '已作废'
   }
 }
 

@@ -24,13 +24,26 @@ export default {
       path: 'order',
       component: () => import('@/views/order/index'),
       name: 'Order',
-      meta: { title: '订单管理', icon: 'edit', noCache: true }
+      meta: { title: '付款订单', icon: 'edit', noCache: true }
     },
     {
       path: 'order/detail/:id(\\d+)',
       component: () => import('@/views/order/detail'),
       name: 'OrderDetail',
       meta: { title: '订单详情', icon: 'edit', noCache: true },
+      hidden: true
+    },
+    {
+      path: 'refund',
+      component: () => import('@/views/refund/index'),
+      name: 'Refund',
+      meta: { title: '退款订单', icon: 'edit', noCache: true }
+    },
+    {
+      path: 'refund/detail/:id(\\d+)',
+      component: () => import('@/views/refund/detail'),
+      name: 'RefundDetail',
+      meta: { title: '退款详情', icon: 'edit', noCache: true },
       hidden: true
     },
     {

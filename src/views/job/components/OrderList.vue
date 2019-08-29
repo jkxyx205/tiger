@@ -29,7 +29,7 @@
         align="center"
       >
         <template slot-scope="{ row }">
-          <span>{{ row.orderStatus | orderStatus }}</span>
+          <span :class="'circle-order-status-' + row.orderStatus">{{ row.orderStatus | orderStatus }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -68,6 +68,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/styles/platform/service/order.scss';
+
 .description {
   overflow: hidden;
   text-overflow: ellipsis;

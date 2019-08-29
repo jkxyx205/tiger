@@ -83,3 +83,7 @@ export function jobStatus(value) {
 export function jobType(value) {
   return Dict.getLabel(Dict.JOB_TYPE, value)
 }
+
+export function refundStatus(value) {
+  return Dict.getLabel(Dict.REFUND_STATUS, value)
+}

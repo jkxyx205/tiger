@@ -114,7 +114,56 @@
               </div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="部署单据" name="deploy">退款单据</el-tab-pane>
+          <el-tab-pane label="退款单据" name="refund">
+            <template>
+              <el-table
+                :data="order.refundList"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="id"
+                  label="退款编号"
+                  width="180"
+                />
+                <el-table-column
+                  prop="description"
+                  label="退款理由"
+                />
+                <el-table-column
+                  prop="refundStatus"
+                  label="申请时间"
+                  align="center"
+                  width="180"
+                >
+                  <template slot-scope="{ row }">
+                    {{ row.paidDate | parseTime }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="退款状态"
+                  align="center"
+                  width="180"
+                >
+                  <template slot-scope="{row}">
+                    <span :class="'circle-refund-status-' + row.refundStatus">{{ row.refundStatus |refundStatus }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作"
+                  width="180"
+                  align="center"
+                >
+                  <template slot-scope="{ row }">
+                    <router-link :to="'/service/refund/detail/'+ row.id">
+                      <el-link type="primary" size="small">
+                        详情
+                      </el-link>
+                    </router-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
+          </el-tab-pane>
         </template>
       </el-tabs>
     </div>
@@ -151,6 +200,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/platform/service/order.scss";
+@import '@/styles/platform/service/refund.scss';
+@import '@/styles/platform/service/job.scss';
 
 .textarea-wrap {
   label {

@@ -24,7 +24,7 @@ export function findDetailById(id) {
 
 export function listLogs(orderId) {
   return request({
-    url: `/api/tiger/platform/order/${orderId}/orderLogs`,
+    url: `/api/tiger/platform/order/${orderId}/logs`,
     method: 'get'
   })
 }

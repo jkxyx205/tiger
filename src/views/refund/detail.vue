@@ -92,7 +92,7 @@
   </div>
 </template>
 <script>
-import { findDetailById, ok, reject, finshed } from '@/api/platform/service/refund'
+import { findDetailById, ok, reject, finshed, listLogs } from '@/api/platform/service/refund'
 import Log from '@/components/Log'
 import { mapGetters } from 'vuex'
 
@@ -138,12 +138,7 @@ export default {
         type: 'warning'
       }).then(() => {
         ok(this.id).then(res => {
-          this.refund.refundStatus = res.data
-          this.$message({
-            showClose: true,
-            message: '操作完成',
-            type: 'success'
-          })
+          this._commonAction(res.data)
         })
       })
     },
@@ -154,14 +149,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           reject(this.id, this.form.remarks).then(res => {
-            this.refund.refundStatus = res.data
             this.refund.remarks = this.form.remarks
             this.dialogVisible = false
-            this.$message({
-              showClose: true,
-              message: '操作完成',
-              type: 'success'
-            })
+            this._commonAction(res.data)
           })
         } else {
           return false
@@ -170,13 +160,22 @@ export default {
     },
     paid() {
       finshed(this.id).then(res => {
-        this.refund.refundStatus = res.data
         this.dialogVisible = false
-        this.$message({
-          showClose: true,
-          message: '操作完成',
-          type: 'success'
-        })
+        this._commonAction(res.data)
+      })
+    },
+    _commonAction(status) {
+      this.refund.refundStatus = status
+      this._refreshLog()
+      this.$message({
+        showClose: true,
+        message: '操作完成',
+        type: 'success'
+      })
+    },
+    _refreshLog() {
+      listLogs(this.id).then(res => {
+        this.refund.logList = res.data
       })
     }
   }

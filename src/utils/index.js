@@ -84,12 +84,17 @@ export function formatTime(time, option) {
       '月' +
       d.getDate() +
       '日' +
-      d.getHours() +
+      fillZero(d.getHours()) +
       '时' +
-      d.getMinutes() +
+      fillZero(d.getMinutes()) +
       '分'
     )
   }
+}
+
+function fillZero(s) {
+  s = s + ''
+  return s.length < 2 ? ('0' + s) : s
 }
 
 /**

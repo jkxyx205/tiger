@@ -11,13 +11,12 @@ export function findDetailById(id) {
  * @param jobId
  * @param data
  * {
-	"description": "get out!!!!!"
-  } 
-} data
+    "description": "get out!!!!!"
+   }
  */
 export function feedback(jobId, data, userId) {
   return request({
-    url: `/api/tiger/platform/jobs/${jobId}/jobLogs`,
+    url: `/api/tiger/platform/jobs/${jobId}/logs`,
     data,
     params: {
       userId
@@ -28,7 +27,7 @@ export function feedback(jobId, data, userId) {
 
 export function listLogs(jobId) {
   return request({
-    url: `/api/tiger/platform/jobs/${jobId}/jobLogs`,
+    url: `/api/tiger/platform/jobs/${jobId}/logs`,
     method: 'get'
   })
 }

@@ -210,11 +210,24 @@ aside {
   float: right;
 }
 
+.label-item {
+  label {
+    margin-right: 8px;
+  }
+}
+
 .data-item {
   display: inline-block;
   margin-right: 24px;
   white-space: nowrap;
+  @extend .label-item; 
+}
+
+.textarea-wrap {
+  white-space: pre;
   label {
     margin-right: 8px;
   }
+  line-height: 1.5;
+  @extend .label-item;
 }

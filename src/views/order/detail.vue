@@ -130,13 +130,16 @@
                   label="退款理由"
                 />
                 <el-table-column
-                  prop="refundStatus"
+                  prop="price"
+                  label="退款金额"
+                />
+                <el-table-column
                   label="申请时间"
                   align="center"
                   width="180"
                 >
                   <template slot-scope="{ row }">
-                    {{ row.paidDate | parseTime }}
+                    {{ row.createDate | parseTime }}
                   </template>
                 </el-table-column>
                 <el-table-column

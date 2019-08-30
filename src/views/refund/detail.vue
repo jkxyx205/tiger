@@ -9,13 +9,19 @@
           <label>状态:</label><span :class="'circle-refund-status-' + refund.refundStatus">{{ refund.refundStatus | refundStatus }}</span>
         </div>
         <div class="pull-right operator-bar">
-          <el-button size="small">同意</el-button>
-          <el-button size="small" type="danger">拒绝</el-button>
+          <template v-if="refund.refundStatus === 0">
+            <el-button size="small" @click="ok">同意</el-button>
+            <el-button size="small" type="danger" @click="rejectDialog">拒绝</el-button>
+          </template>
+          <el-button v-if="refund.refundStatus === 2" size="small" @click="paid">确认退款</el-button>
         </div>
       </div>
       <div class="job-master-container-body">
         <div class="textarea-wrap">
           <label>退款理由:</label><span>{{ refund.description }}</span>
+        </div>
+        <div v-if="refund.refundStatus === 1" class="textarea-wrap">
+          <label>拒绝理由:</label><span>{{ refund.remarks }}</span>
         </div>
       </div>
       <div class="job-master-container-footer">
@@ -44,34 +50,49 @@
           <log :logs="refund.logList" />
         </el-tab-pane>
         <el-tab-pane label="订单单据" name="order">
-          <div class="textarea-wrap">
-            <div>
+          <div class="order-tab">
+            <div class="label-item">
               <label>订单编号:</label><span>{{ refund.order2.id }}</span>
+              <div style="display:inline-block; margin-left: 16px;">
+                <router-link :to="'/service/order/detail/'+ refund.order2.id">
+                  <el-link type="primary" size="small">
+                    详情
+                  </el-link>
+                </router-link>
+              </div>
             </div>
-            <div>
+            <div class="textarea-wrap">
               <label>服务内容:</label><span>{{ refund.order2.description }}</span>
             </div>
-            <div>
+            <div class="label-item">
               <label>价格:</label><span>{{ refund.order2.price }}元</span>
             </div>
-            <div>
+            <div class="label-item">
               <label>创建日期:</label><span>{{ refund.order2.createDate | parseTime }}</span>
-            </div>
-            <div>
-              <router-link :to="'/service/order/detail/'+ refund.order2.id">
-                <el-link type="primary" size="small">
-                  详情
-                </el-link>
-              </router-link>
             </div>
           </div>
         </el-tab-pane>
       </el-tabs>
     </div>
+    <el-dialog
+      title=""
+      :visible.sync="dialogVisible"
+      width="800px"
+    >
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-form-item label="拒绝理由" prop="remarks">
+          <el-input v-model="form.remarks" type="textarea" :autosize="{ minRows: 3, maxRows: 5 }" maxlength="250" show-word-limit />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="reject('form')">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { findDetailById } from '@/api/platform/service/refund'
+import { findDetailById, ok, reject, finshed } from '@/api/platform/service/refund'
 import Log from '@/components/Log'
 import { mapGetters } from 'vuex'
 
@@ -81,10 +102,20 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
+      dialogVisible: false,
+      form: {
+        remarks: ''
+      },
       refund: {
         order2: {
 
         }
+      },
+      rules: {
+        remarks: [
+          { required: true, message: '请输入拒绝提款的理由', trigger: 'blur' },
+          { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
+        ]
       },
       activeName: 'log'
     }
@@ -100,6 +131,54 @@ export default {
         this.refund = res.data
       })
     })
+  },
+  methods: {
+    ok() {
+      this.$confirm('确认退款吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        ok(this.id).then(res => {
+          this.refund.refundStatus = res.data
+          this.$message({
+            showClose: true,
+            message: '操作完成',
+            type: 'success'
+          })
+        })
+      })
+    },
+    rejectDialog() {
+      this.dialogVisible = true
+    },
+    reject(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          reject(this.id, this.form.remarks).then(res => {
+            this.refund.refundStatus = res.data
+            this.refund.remarks = this.form.remarks
+            this.dialogVisible = false
+            this.$message({
+              showClose: true,
+              message: '操作完成',
+              type: 'success'
+            })
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    paid() {
+      finshed(this.id).then(res => {
+        this.refund.refundStatus = res.data
+        this.dialogVisible = false
+        this.$message({
+          showClose: true,
+          message: '操作完成',
+          type: 'success'
+        })
+      })
+    }
   }
 }
 </script>
@@ -107,14 +186,13 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/platform/service/refund.scss';
 
-.textarea-wrap {
-  label {
-    margin-right: 8px;
-  }
-  line-height: 1.5;
+.order-tab {
+  padding: 20px;
+}
 
+.order-tab, .job-master-container-body {
   & > div {
-    margin: 16px 0;
+    margin-bottom: 16px;
   }
 }
 
@@ -135,7 +213,8 @@ export default {
   background: #f5f7fa;
 
   & > div {
-    padding: 0 24px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   &-header {
@@ -144,10 +223,8 @@ export default {
   }
 
   &-body {
-    & > div {
-      padding-top: 32px;
-      padding-bottom: 32px;
-    }
+    padding-top: 32px;
+    padding-bottom: 32px;
     border-top: 1px solid #DCDFE6;
     border-bottom: 1px solid #DCDFE6;
   }

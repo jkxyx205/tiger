@@ -1,35 +1,29 @@
 <template>
-  <div class="order-list">
+  <div class="deploy-list">
     <el-table
-      :data="orderList"
+      :data="deployList"
       style="width: 100%"
     >
       <el-table-column
         prop="id"
-        label="订单编号"
+        label="部署编号"
         width="150"
       />
       <el-table-column
-        label="服务描述"
+        label="部署描述"
       >
         <template slot-scope="{row}">
           <p class="description">{{ row.title }}</p>
         </template>
       </el-table-column>
       <el-table-column
-        prop="price"
-        label="价格(元)"
-        width="120"
-        align="center"
-      />
-      <el-table-column
-        prop="orderStatus"
+        prop="deployStatus"
         label="状态"
         width="120"
         align="center"
       >
         <template slot-scope="{ row }">
-          <span :class="'circle-order-status-' + row.orderStatus">{{ row.orderStatus | orderStatus }}</span>
+          <span :class="'circle-deploy-status-' + row.deployStatus">{{ row.deployStatus | deployStatus }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -47,7 +41,7 @@
         align="center"
       >
         <template slot-scope="{ row }">
-          <router-link :to="'/service/order/detail/'+row.id">
+          <router-link :to="'/service/deploy/detail/'+row.id">
             <el-link type="primary" size="small">
               详情
             </el-link>
@@ -60,7 +54,7 @@
 <script>
 export default {
   props: {
-    orderList: {
+    deployList: {
       type: Array,
       default: () => []
     }
@@ -68,7 +62,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/styles/platform/service/order.scss';
+@import '@/styles/platform/service/deploy.scss';
 
 .description {
   overflow: hidden;

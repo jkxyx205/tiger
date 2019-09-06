@@ -23,7 +23,7 @@
       cell-class-name="tb-cell"
     >
       <el-table-column prop="id" label="退款编号" align="center" width="150" />
-      <el-table-column prop="description" label="退款理由" />
+      <el-table-column prop="title" label="退款理由" />
       <el-table-column prop="groupName" label="所属公司" width="160px" />
       <el-table-column label="申请时间" width="160px" align="center">
         <template slot-scope="{row}">

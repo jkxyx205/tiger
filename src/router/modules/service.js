@@ -51,6 +51,13 @@ export default {
       component: () => import('@/views/deploy/index'),
       name: 'Deploy',
       meta: { title: '部署清单', icon: 'edit', noCache: true }
-    }
+    },
+    {
+      path: 'deploy/detail/:id(\\d+)',
+      component: () => import('@/views/deploy/detail'),
+      name: 'DeployDetail',
+      meta: { title: '部署详情', icon: 'edit', noCache: true },
+      hidden: true
+    },
   ]
 }

@@ -11,7 +11,7 @@
           <div class="content-file">
             <ul>
               <li v-for="file in log.files" :key="file.id">
-                <a :href="'http://etmode.com:8500/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.name }}</span></a>
+                <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.name }}</span></a>
               </li>
             </ul>
           </div>
@@ -29,6 +29,11 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    }
+  },
+  data() {
+    return {
+      baseUrl: process.env.VUE_APP_FILE_UPLOAD
     }
   }
 }

@@ -52,58 +52,35 @@
           <el-tab-pane label="订单单据" name="order">
             <order-list :order-list="job.orderList" />
           </el-tab-pane>
-          <el-tab-pane label="部署单据" name="deploy">部署单据</el-tab-pane>
+          <el-tab-pane label="部署单据" name="deploy">
+            <deploy-list :deploy-list="job.deployList" />
+          </el-tab-pane>
         </template>
       </el-tabs>
     </div>
-    <div v-if="over" class="feedback">
-      <div class="feedback-header border">
-        <span>我要反馈</span>
-      </div>
-      <div class="feedback-content">
-        <el-form ref="feedback" :model="feedback" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="反馈内容" prop="description">
-            <el-input v-model="feedback.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入反馈内容" />
-          </el-form-item>
-          <el-form-item>
-            <el-upload
-              ref="upload"
-              class="upload-demo"
-              :multiple="true"
-              action="http://etmode.com:8500/documents/upload"
-              :limit="5"
-              :on-exceed="exceed"
-              :on-success="success"
-              :before-upload="beforeUpload"
-            >
-              <el-button size="small" type="default">📎附件上传</el-button>
-              <span slot="tip" class="el-upload__tip" style="margin-left: 8px;">最多上传5个附件，每个附件大小不超过8M</span>
-            </el-upload>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="saving" type="primary" :disabled="feedback.description.trim().length === 0" @click="submitForm('feedback')">发送</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
+    <template v-if="over">
+      <feedback :id="job.id" @update="feedbackUpdated" />
+    </template>
     <create-order ref="createOrder" :job="job" @create-success="orderCreated()" />
-    <create-deploy ref="createDeploy" :job="job" />
+    <create-deploy ref="createDeploy" :job="job" @create-success="deployCreated()" />
   </div>
 </template>
 
 <script>
-import { findDetailById, feedback, changeStatus, listLogs } from '@/api/platform/service/job'
+import { findDetailById, changeStatus } from '@/api/platform/service/job'
 import { getJobOrderList } from '@/api/platform/service/order'
+import { getJobDeployList } from '@/api/platform/service/deploy'
 import * as Dict from '@/utils/dictionary-getter'
-import { mapGetters } from 'vuex'
 import Log from '@/components/Log'
+import { list } from '@/api/log'
 import OrderList from './components/OrderList'
+import DeployList from './components/DeployList'
 import CreateOrder from './components/CreateOrder'
 import CreateDeploy from './components/CreateDeploy'
+import Feedback from '@/components/Feedback'
 
 const PROCESSING_STATUS = '1'
 const MAKE_FINISHED_STATUS = '2'
-const UPLOAD_MAX_SIZE = 8 // M
 
 export default {
   name: 'JobDetail',
@@ -116,31 +93,16 @@ export default {
     }
   },
   components: {
-    Log, CreateOrder, CreateDeploy, OrderList
+    Log, CreateOrder, CreateDeploy, OrderList, Feedback, DeployList
   },
   data() {
     return {
-      saving: false,
       id: this.$route.params.id,
       job: {},
-      activeName: 'log',
-      fileList: [],
-      feedback: {
-        description: '',
-        attachments: ''
-      },
-      rules: {
-        description: [
-          { required: true, message: '请输入反馈内容', trigger: 'blur' },
-          { min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur' }
-        ]
-      }
+      activeName: 'log'
     }
   },
   computed: {
-    ...mapGetters([
-      'userId'
-    ]),
     over() {
       return this.job.jobStatus === 0 || this.job.jobStatus === 1 || this.job.jobStatus === 2
     }
@@ -154,30 +116,11 @@ export default {
     setInterval(this._refreshLog, 1000 * 60)
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.saving = true
-          this.feedback.attachments = this._normalize2JSONAttachment()
-          feedback(this.job.id, this.feedback, this.userId).then(res => {
-            this.job.logList.push(res.data)
-            this._resetForm()
-            this.saving = false
-            this.$message.success('反馈发送成功')
-          })
-        } else {
-          return false
-        }
-      })
-    },
     makeFinished() {
       this._changeStatus(MAKE_FINISHED_STATUS)
     },
     reDo() {
       this._changeStatus(PROCESSING_STATUS)
-    },
-    success(response, file, fileList) {
-      this.fileList = fileList
     },
     makeOrderDialog() {
       this.$refs.createOrder.openDialog()
@@ -185,22 +128,19 @@ export default {
     makeDeployDialog() {
       this.$refs.createDeploy.openDialog()
     },
-    beforeUpload(file) {
-      if (file.size > UPLOAD_MAX_SIZE * 1024 * 1024) {
-        this.$message.error(`文件最大不能超过${UPLOAD_MAX_SIZE}M`)
-        return false
-      }
-      return true
-    },
-    exceed(files, fileList) {
-      this.$message.warning(`当前限制选择5个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
-    },
     orderCreated() {
       this._refreshLog()
       this._refreshOrder()
     },
+    deployCreated() {
+      this._refreshLog()
+      this._refreshDeploy()
+    },
+    feedbackUpdated(data) {
+      this.job.logList.push(data)
+    },
     _refreshLog() {
-      listLogs(this.job.id).then(res => {
+      list(this.job.id).then(res => {
         this.job.logList = res.data
       })
     },
@@ -209,30 +149,16 @@ export default {
         this.job.orderList = res.data
       })
     },
+    _refreshDeploy() {
+      getJobDeployList(this.job.id).then(res => {
+        this.job.deployList = res.data
+      })
+    },
     _changeStatus(status) {
       changeStatus(this.job.id, status).then(res => {
         this.job.jobStatus = res.data
         this._refreshLog()
       })
-    },
-    _resetForm() {
-      this.feedback.description = ''
-      this.feedback.attachments = ''
-      this.$refs.upload.clearFiles()
-      this.fileList = []
-    },
-    _normalize2JSONAttachment() {
-      const attachments = []
-      if (this.fileList.length > 0) {
-        this.fileList.forEach(item => {
-          const fileInfo = item.response.data[0]
-          attachments.push({
-            id: fileInfo.id,
-            name: fileInfo.fullName
-          })
-        })
-      }
-      return JSON.stringify(attachments)
     }
   }
 }
@@ -273,21 +199,5 @@ export default {
     background: #f5f7fa;
     line-height: 40px;
   }
-}
-
-.feedback {
-  &-header {
-    padding: 0 24px;
-    background: #f5f7fa;
-    line-height: 40px;
-  }
-
-  &-content {
-    padding: 24px 48px;
-  }
-}
-
-.el-tabs--border-card {
-  box-shadow: none;
 }
 </style>

@@ -7,13 +7,6 @@ export function findDetailById(id) {
   })
 }
 
-export function listLogs(refundId) {
-  return request({
-    url: `/api/tiger/platform/refund/${refundId}/logs`,
-    method: 'get'
-  })
-}
-
 export function ok(id) {
   return request({
     url: `/api/tiger/platform/refund/${id}/opt/ok`,

@@ -7,6 +7,7 @@ export const ORDER_TYPE = 'ORDER_TYPE_GET'
 export const ORDER_STATUS = 'ORDER_STATUS_GET'
 
 export const REFUND_STATUS = 'REFUND_STATUS_GET'
+export const DEPLOY_STATUS = 'DEPLOY_STATUS_GET'
 
 var mapping = {
   [SEX_TYPE]: {
@@ -45,6 +46,13 @@ var mapping = {
     2: '退款中',
     3: '已退款',
     4: '已作废'
+  },
+  [DEPLOY_STATUS]: {
+    0: '待部署',
+    1: '已作废',
+    2: '部署中',
+    3: '已拒绝',
+    4: '已完成'
   }
 }
 

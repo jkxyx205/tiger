@@ -87,3 +87,8 @@ export function jobType(value) {
 export function refundStatus(value) {
   return Dict.getLabel(Dict.REFUND_STATUS, value)
 }
+
+export function deployStatus(value) {
+  return Dict.getLabel(Dict.DEPLOY_STATUS, value)
+}
+

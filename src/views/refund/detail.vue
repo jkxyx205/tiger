@@ -92,9 +92,10 @@
   </div>
 </template>
 <script>
-import { findDetailById, ok, reject, finshed, listLogs } from '@/api/platform/service/refund'
+import { findDetailById, ok, reject, finshed } from '@/api/platform/service/refund'
 import Log from '@/components/Log'
 import { mapGetters } from 'vuex'
+import { list } from '@/api/log'
 
 export default {
   name: 'RefundDetail',
@@ -174,7 +175,7 @@ export default {
       })
     },
     _refreshLog() {
-      listLogs(this.id).then(res => {
+      list(this.id).then(res => {
         this.refund.logList = res.data
       })
     }

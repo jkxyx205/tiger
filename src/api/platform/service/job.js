@@ -7,31 +7,6 @@ export function findDetailById(id) {
   })
 }
 
-/**
- * @param jobId
- * @param data
- * {
-    "description": "get out!!!!!"
-   }
- */
-export function feedback(jobId, data, userId) {
-  return request({
-    url: `/api/tiger/platform/jobs/${jobId}/logs`,
-    data,
-    params: {
-      userId
-    },
-    method: 'post'
-  })
-}
-
-export function listLogs(jobId) {
-  return request({
-    url: `/api/tiger/platform/jobs/${jobId}/logs`,
-    method: 'get'
-  })
-}
-
 export function changeStatus(jobId, status) {
   return request({
     url: `/api/tiger/platform/jobs/${jobId}/status/${status}`,

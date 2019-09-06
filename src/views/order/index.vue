@@ -23,7 +23,7 @@
       cell-class-name="tb-cell"
     >
       <el-table-column prop="id" label="订单编号" align="center" width="150" />
-      <el-table-column prop="description" label="服务内容" />
+      <el-table-column prop="title" label="服务内容" />
       <el-table-column label="款项类型" width="100px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.orderType | orderType }}</span>

@@ -1,0 +1,51 @@
+%circle-status {
+  $circle-width: 8px;
+  position: relative;
+  display: inline-block;
+  padding-left: $circle-width * 1.6;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: $circle-width;
+    height: $circle-width;
+    border-radius: 50%;
+  }
+}
+
+.circle-deploy-status-0 {
+  @extend %circle-status;
+  &:before {
+    background: #409EFF;
+  }
+}
+
+.circle-deploy-status-1 {
+  @extend %circle-status;
+  &:before {
+    background: #909399;    
+  }
+}
+
+.circle-deploy-status-2 {
+  @extend %circle-status;
+  &:before {
+    background: #409EFF;
+  }
+}
+
+.circle-deploy-status-3 {
+  @extend %circle-status;
+  &:before {
+    background: #909399;
+  }
+}
+
+.circle-deploy-status-4 {
+  @extend %circle-status;
+  &:before {
+    background: #67C23A;
+  }
+}

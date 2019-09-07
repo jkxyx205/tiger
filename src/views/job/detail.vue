@@ -20,7 +20,7 @@
       </div>
       <div class="job-master-container-body">
         <div class="data-item">
-          <label>问题描述:</label><span>{{ job.description }}</span>
+          <label>问题描述:</label><span>{{ job.title }}</span>
         </div>
       </div>
       <div class="job-master-container-footer">

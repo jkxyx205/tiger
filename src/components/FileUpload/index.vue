@@ -4,7 +4,7 @@
       ref="upload"
       class="upload-demo"
       :multiple="true"
-      action="http://etmode.com:8500/documents/upload"
+      :action="baseUrl + '/documents/upload'"
       :limit="5"
       :on-exceed="exceed"
       :on-success="success"
@@ -23,7 +23,8 @@ export default {
   name: 'FileUpload',
   data() {
     return {
-      fileList: []
+      fileList: [],
+      baseUrl: process.env.VUE_APP_FILE_UPLOAD
     }
   },
   methods: {

@@ -67,16 +67,16 @@
         <div class="label-info-container">
           <div>
             <div class="display-item">
-              <label>名字：</label><span>{{ user.nickname }}</span>
+              <label>名字：</label><div>{{ user.nickname }}</div>
             </div>
             <div class="display-item">
-              <label>性别：</label><span>{{ user.sex | sex }}</span>
+              <label>性别：</label><div>{{ user.sex | sex }}</div>
             </div>
             <div class="display-item">
-              <label>手机：</label><span>{{ user.mobile }}</span>
+              <label>手机：</label><div>{{ user.mobile }}</div>
             </div>
             <div class="display-item">
-              <label>签名：</label><span>{{ user.signature }}</span>
+              <label>签名：</label><div>{{ user.signature }}</div>
             </div>
           </div>
         </div>
@@ -185,8 +185,15 @@ export default {
     }
   }
   .display-item {
+    position: relative;
     margin-bottom: 16px;
     line-height: 1.6;
+    label {
+      position: absolute;
+    }
+    div {
+      margin-left: 40px;
+    }
   }
   .label-info-container {
     display: flex;

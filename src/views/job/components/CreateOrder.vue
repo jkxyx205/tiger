@@ -60,7 +60,7 @@
             </el-table-column>
           </el-table>
           <div class="addDetail">
-            <el-button v-show="form.details.length <= 10" @click="addDetail">新增明细</el-button>
+            <el-button v-show="form.details.length < 10" @click="addDetail">新增明细</el-button>
             <div class="pull-right">
               <label>总价：</label><span class="totalPrice">{{ totalPrice }}元</span>
             </div>

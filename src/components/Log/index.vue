@@ -10,8 +10,8 @@
           <p>{{ log.description }}</p>
           <div class="content-file">
             <ul>
-              <li v-for="file in log.files" :key="file.id">
-                <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.name }}</span></a>
+              <li v-for="file in log.attachments" :key="file.id">
+                <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.fullName }}</span></a>
               </li>
             </ul>
           </div>

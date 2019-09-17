@@ -19,8 +19,8 @@
         </div>
         <div class="attachment-list">
           <ul>
-            <li v-for="file in deploy.files" :key="file.id">
-              <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.name }}</span></a>
+            <li v-for="file in deploy.attachments" :key="file.id">
+              <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.fullName }}</span></a>
             </li>
           </ul>
         </div>

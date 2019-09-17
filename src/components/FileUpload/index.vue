@@ -42,24 +42,34 @@ export default {
       this.fileList = fileList
     },
     getAttachments() {
-      return this._normalize2JSONAttachment()
+      return this._normalizeAttachments()
     },
     clearFiles() {
       return this.$refs.upload.clearFiles()
     },
-    _normalize2JSONAttachment() {
+    _normalizeAttachments() {
       const attachments = []
       if (this.fileList.length > 0) {
         this.fileList.forEach(item => {
           const fileInfo = item.response.data[0]
-          attachments.push({
-            id: fileInfo.id,
-            name: fileInfo.fullName
-          })
+          attachments.push(fileInfo)
         })
       }
-      return JSON.stringify(attachments)
-    }
+      return attachments
+    }//,
+    // _normalize2JSONAttachment() {
+    //   const attachments = []
+    //   if (this.fileList.length > 0) {
+    //     this.fileList.forEach(item => {
+    //       const fileInfo = item.response.data[0]
+    //       attachments.push({
+    //         id: fileInfo.id,
+    //         name: fileInfo.fullName
+    //       })
+    //     })
+    //   }
+    //   return JSON.stringify(attachments)
+    // }
   }
 }
 </script>

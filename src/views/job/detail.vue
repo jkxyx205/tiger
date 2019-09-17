@@ -22,6 +22,10 @@
         <div class="data-item">
           <label>问题描述:</label><span>{{ job.title }}</span>
         </div>
+        <div v-if="job.tags && job.tags.length > 0" class="tags-container">
+          <label><i class="el-icon-paperclip" /></label>
+          <span v-for="(tag, index) in job.tags" :key="index">{{ tag }}</span>
+        </div>
       </div>
       <div class="job-master-container-footer">
         <div class="data-item">
@@ -188,11 +192,21 @@ export default {
   }
 
   &-body {
-    line-height: 80px;
+    padding-top: 16px!important;
+    padding-bottom: 16px!important;
+    line-height: 3;
     border-top: 1px solid #DCDFE6;
     border-bottom: 1px solid #DCDFE6;
     overflow: hidden;
     text-overflow: ellipsis;
+
+  }
+
+  .tags-container  {
+    color: #909399;
+    label, span {
+      margin-right: 8px;
+    }
   }
 
   &-footer {

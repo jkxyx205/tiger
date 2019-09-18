@@ -99,20 +99,6 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  {
-    path: '/message',
-    component: Layout,
-    // alwaysShow: true,
-    // meta: { title: '消息测试Root', icon: 'guide', noCache: true }, //
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/message/index'),
-        name: 'Message',
-        meta: { title: '消息测试', icon: 'guide', noCache: false }
-      }
-    ]
-  },
   Service,
   {
     path: '/usermgt',
@@ -159,6 +145,20 @@ export const asyncRoutes = [
         component: () => import('@/views/icons/index'),
         name: 'OA',
         meta: { title: 'OA', icon: 'edit', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/message',
+    component: Layout,
+    // alwaysShow: true,
+    // meta: { title: '消息测试Root', icon: 'guide', noCache: true }, //
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/message/index'),
+        name: 'Message',
+        meta: { title: '消息测试', icon: 'guide', noCache: false }
       }
     ]
   }

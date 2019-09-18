@@ -56,20 +56,7 @@ export default {
         })
       }
       return attachments
-    }//,
-    // _normalize2JSONAttachment() {
-    //   const attachments = []
-    //   if (this.fileList.length > 0) {
-    //     this.fileList.forEach(item => {
-    //       const fileInfo = item.response.data[0]
-    //       attachments.push({
-    //         id: fileInfo.id,
-    //         name: fileInfo.fullName
-    //       })
-    //     })
-    //   }
-    //   return JSON.stringify(attachments)
-    // }
+    }
   }
 }
 </script>

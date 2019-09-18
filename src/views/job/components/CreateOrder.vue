@@ -154,7 +154,7 @@ export default {
     },
     _normalizeData() {
       var data = {}
-      data.detailJSON = JSON.stringify(this.form.details)
+      data.details = this.form.details
       data.description = this.form.description
       data.groupId = this.job.groupId
       data.payer = this.job.createBy

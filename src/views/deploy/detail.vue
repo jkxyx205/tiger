@@ -14,13 +14,14 @@
         </div>
       </div>
       <div class="job-master-container-body" style="line-height: 1.6; padding: 20px;">
-        <div class="data-item" style="white-space: initial;">
+        <div class="textarea-wrap">
           <label>部署内容:</label><span>{{ deploy.description }}</span>
         </div>
         <div class="attachment-list">
           <ul>
-            <li v-for="file in deploy.attachments" :key="file.id">
-              <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.fullName }}</span></a>
+            <li v-for="attachment in deploy.attachments" :key="attachment.id">
+              <!-- <a :href="baseUrl + '/documents/download/' + file.id"><i class="el-icon-document" /><span class="file-name">{{ file.fullName }}</span></a> -->
+              <a href="javascript:;" @click="preview(attachment)"><i class="el-icon-document" /><span class="file-name">{{ attachment.fullName }}</span></a>
             </li>
           </ul>
         </div>
@@ -52,6 +53,7 @@
     <template v-if="over">
       <feedback :id="deploy.id" @update="feedbackUpdated" />
     </template>
+    <preview ref="preview" />
   </div>
 </template>
 
@@ -61,6 +63,7 @@ import Log from '@/components/Log'
 import { list } from '@/api/log'
 import Feedback from '@/components/Feedback'
 import JobSummary from '@/views/job/components/JobSummary'
+import Preview from '@/components/Preview'
 
 const CANCEL_STATUS = '1'
 const MAKE_FINISHED_STATUS = '4'
@@ -68,7 +71,7 @@ const MAKE_FINISHED_STATUS = '4'
 export default {
   name: 'DeployDetail',
   components: {
-    Log, Feedback, JobSummary
+    Log, Feedback, JobSummary, Preview
   },
   data() {
     return {
@@ -101,6 +104,9 @@ export default {
     },
     feedbackUpdated(data) {
       this.deploy.logList.push(data)
+    },
+    preview(file) {
+      this.$refs.preview.show(file)
     },
     _refreshLog() {
       list(this.deploy.id).then(res => {

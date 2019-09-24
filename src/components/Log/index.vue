@@ -7,7 +7,7 @@
           <div class="user-name">{{ log.name }}</div>
         </div>
         <div class="content-info">
-          <p>{{ log.description }}</p>
+          <p :class="'by-' + log.logType">{{ log.description }}</p>
           <div class="content-file">
             <ul>
               <li v-for="attachment in log.attachments" :key="attachment.id">
@@ -87,7 +87,13 @@ export default {
   .content-info {
     margin-left: $info-width + 8px;
     line-height: 1.5;
-    white-space: pre-line;
+    word-break: break-all;
+    & > p {
+      &.by-USER {
+        font-weight: bold;
+      }
+      white-space: pre-wrap;
+    }
     .content-file {
       margin-top: 8px;
       li {

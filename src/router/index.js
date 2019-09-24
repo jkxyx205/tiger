@@ -104,7 +104,7 @@ export const asyncRoutes = [
     path: '/usermgt',
     component: Layout,
     alwaysShow: true,
-    meta: { title: '用户管理', icon: 'user'},
+    meta: { title: '用户管理', icon: 'user' },
     children: [
       {
         path: 'users',
@@ -116,7 +116,7 @@ export const asyncRoutes = [
         path: 'groups',
         component: () => import('@/views/user/group-list'),
         name: 'Groups',
-        meta: { title: '公司信息', icon: 'edit'}
+        meta: { title: '公司信息', icon: 'edit' }
       }
     ]
   },

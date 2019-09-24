@@ -51,7 +51,7 @@
       </el-tabs>
     </div>
     <template v-if="over">
-      <feedback :id="deploy.id" @update="feedbackUpdated" />
+      <feedback :id="deploy.id" :log-target="4" @update="feedbackUpdated" />
     </template>
     <preview ref="preview" />
   </div>

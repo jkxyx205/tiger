@@ -6,7 +6,7 @@
     <div class="feedback-content">
       <el-form ref="feedback" :model="feedback" :rules="rules" class="demo-ruleForm">
         <el-form-item label="反馈内容" prop="description">
-          <el-input v-model="feedback.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入反馈内容" />
+          <el-input v-model="feedback.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入反馈内容" maxlength="1000" show-word-limit />
         </el-form-item>
         <el-form-item>
           <file-upload ref="fileUpload" />
@@ -29,7 +29,13 @@ export default {
   props: {
     id: {
       type: Number,
-      default: undefined
+      default: undefined,
+      required: true
+    },
+    logTarget: {
+      type: Number,
+      default: undefined,
+      required: true
     }
   },
   data() {
@@ -42,7 +48,7 @@ export default {
       rules: {
         description: [
           { required: true, message: '请输入反馈内容', trigger: 'blur' },
-          { min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur' }
+          { min: 1, max: 1000, message: '长度在 1 到 1000 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -57,6 +63,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.saving = true
+          this.feedback.logTarget = this.logTarget
           this.feedback.attachments = this.$refs.fileUpload.getAttachments()
           feedback(this.id, this.feedback, this.userId).then(res => {
             this._resetForm()

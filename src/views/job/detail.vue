@@ -12,8 +12,8 @@
           <label>状态:</label><span :class="'circle-job-status-' + job.jobStatus">{{ job.jobStatus | status }}</span>
         </div>
         <div v-if="over" class="pull-right operator-bar">
-          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 2" size="small" @click="makeOrderDialog()">创建订单</el-button>
-          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 2" size="small" @click="makeDeployDialog()">创建部署单</el-button>
+          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 0" size="small" @click="makeOrderDialog()">创建订单</el-button>
+          <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 0" size="small" @click="makeDeployDialog()">创建部署单</el-button>
           <el-button v-if="job.jobStatus === 0 || job.jobStatus === 1" size="small" @click="makeFinished()">处理完成</el-button>
           <el-button v-if="job.jobStatus === 2" size="small" @click="reDo()">重新处理</el-button>
         </div>
@@ -52,7 +52,7 @@
         <el-tab-pane label="沟通纪录" name="log">
           <log :logs="job.logList" />
         </el-tab-pane>
-        <template v-if="job.jobType === 2">
+        <template v-if="job.jobType === 0">
           <el-tab-pane label="订单单据" name="order">
             <order-list :order-list="job.orderList" />
           </el-tab-pane>
@@ -63,7 +63,7 @@
       </el-tabs>
     </div>
     <template v-if="over">
-      <feedback :id="job.id" @update="feedbackUpdated" />
+      <feedback :id="job.id" :log-target="1" @update="feedbackUpdated" />
     </template>
     <create-order ref="createOrder" :job="job" @create-success="orderCreated()" />
     <create-deploy ref="createDeploy" :job="job" @create-success="deployCreated()" />

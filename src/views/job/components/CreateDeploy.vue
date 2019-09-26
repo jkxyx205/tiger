@@ -15,7 +15,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button :loading="saving" type="primary" @click="sendDeploy('form')">确 定</el-button>
+        <el-button :loading="saving" type="primary" @click="sendDeploy('form')">创 建</el-button>
       </span>
     </el-dialog>
   </div>
@@ -54,6 +54,10 @@ export default {
     },
     sendDeploy(formName) {
       this.$refs[formName].validate((valid) => {
+        if (!this.$refs.fileUpload.isAllUpload()) {
+          this.$message.error('正在上传附件，上传完成之后再创建')
+          return
+        }
         if (valid) {
           this.saving = true
           this.form.attachments = this.$refs.fileUpload.getAttachments()

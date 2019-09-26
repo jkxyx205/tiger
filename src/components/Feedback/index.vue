@@ -60,6 +60,10 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      if (!this.$refs.fileUpload.isAllUpload()) {
+        this.$message.error('正在上传附件，上传完成之后再发送')
+        return
+      }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.saving = true

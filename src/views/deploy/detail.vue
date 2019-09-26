@@ -77,7 +77,7 @@ export default {
     return {
       baseUrl: process.env.VUE_APP_FILE_UPLOAD,
       id: this.$route.params.id,
-      deploy: {},
+      deploy: { id: 0 },
       activeName: 'log'
     }
   },

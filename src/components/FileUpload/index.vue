@@ -47,6 +47,9 @@ export default {
     clearFiles() {
       return this.$refs.upload.clearFiles()
     },
+    isAllUpload() { // 判断是否所有的文件都上传成功
+      return !document.getElementsByClassName('el-progress-bar').length
+    },
     _normalizeAttachments() {
       const attachments = []
       if (this.fileList.length > 0) {

@@ -38,7 +38,7 @@
           <span>{{ row.jobType | type() }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="100px" align="center">
+      <el-table-column label="状态" width="120px" align="center">
         <template slot-scope="{row}">
           <span :class="'circle-job-status-' + row.jobStatus">{{ row.jobStatus | status() }}</span>
         </template>

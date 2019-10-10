@@ -12,6 +12,7 @@
           <label>状态:</label><span :class="'circle-job-status-' + job.jobStatus">{{ job.jobStatus | status }}</span>
         </div>
         <div v-if="over" class="pull-right operator-bar">
+          <el-button v-if="job.jobStatus === 0" size="small" @click="makeProcess()">分配</el-button>
           <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 0" size="small" @click="makeOrderDialog()">创建订单</el-button>
           <el-button v-if="job.jobStatus !== 3 && job.jobStatus !== 4 && job.jobType === 0" size="small" @click="makeDeployDialog()">创建部署单</el-button>
           <el-button v-if="job.jobStatus === 0 || job.jobStatus === 1" size="small" @click="makeFinished()">处理完成</el-button>
@@ -122,6 +123,9 @@ export default {
   methods: {
     makeFinished() {
       this._changeStatus(MAKE_FINISHED_STATUS)
+    },
+    makeProcess() {
+      this._changeStatus(PROCESSING_STATUS)
     },
     reDo() {
       this._changeStatus(PROCESSING_STATUS)

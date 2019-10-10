@@ -68,7 +68,7 @@
               <label>价格:</label><span>{{ refund.order2.price }}元</span>
             </div>
             <div class="label-item">
-              <label>创建日期:</label><span>{{ refund.order2.createDate | parseTime }}</span>
+              <label>创建时间:</label><span>{{ refund.order2.createDate | parseTime }}</span>
             </div>
           </div>
         </el-tab-pane>

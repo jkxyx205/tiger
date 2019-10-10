@@ -33,12 +33,21 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="创建日期"
+        label="创建时间"
         width="160"
         align="center"
       >
         <template slot-scope="{row}">
           <span>{{ row.createDate | parseTime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="支付时间"
+        width="160"
+        align="center"
+      >
+        <template slot-scope="{row}">
+          <span>{{ row.payDate | parseTime }}</span>
         </template>
       </el-table-column>
       <el-table-column

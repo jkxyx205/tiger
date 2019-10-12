@@ -15,7 +15,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button :loading="saving" type="primary" @click="sendDeploy('form')">创 建</el-button>
+        <el-button :loading="saving" :disabled="this.form.description.trim().length <= 0" type="primary" @click="sendDeploy('form')">创 建</el-button>
       </span>
     </el-dialog>
   </div>
@@ -43,7 +43,7 @@ export default {
       },
       rules: {
         description: [
-          { required: true, message: '部署内容', trigger: 'blur' }
+          { required: true, message: '部署内容不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -53,13 +53,13 @@ export default {
       this.dialogVisible = true
     },
     sendDeploy(formName) {
+      this.saving = true
       this.$refs[formName].validate((valid) => {
         if (!this.$refs.fileUpload.isAllUpload()) {
           this.$message.error('正在上传附件，上传完成之后再创建')
           return
         }
         if (valid) {
-          this.saving = true
           this.form.attachments = this.$refs.fileUpload.getAttachments()
           createJobDeploy(this._normalizeData()).then(res => {
             this.dialogVisible = false
@@ -69,6 +69,7 @@ export default {
             this.$emit('create-success', res.data)
           })
         } else {
+          this.saving = false
           return false
         }
       })

@@ -69,7 +69,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="sendOrder('form')">创 建</el-button>
+        <el-button type="primary" :loading="creating" @click="sendOrder('form')">创 建</el-button>
       </span>
     </el-dialog>
   </div>
@@ -88,12 +88,19 @@ export default {
   data() {
     const validateDetail = (rule, value, callback) => {
       if (this._checkEmptyError()) {
-        callback(new Error('费用明细“费用名称”和“价格”是必填项目'))
+        callback(new Error('1. 费用明细“费用名称”和“价格”是必填项目; 2. ”价格”必须是大于0的数字，最多2为小数'))
+      }
+      callback()
+    }
+    const notBlankValidator = (rule, value, callback) => {
+      if (value.trim().length === 0) {
+        callback(new Error('不能全部为空字符串'))
       }
       callback()
     }
     return {
       dialogVisible: false,
+      creating: false,
       form: {
         description: '',
         detailJSON: '',
@@ -102,7 +109,8 @@ export default {
       rules: {
         description: [
           { required: true, message: '请输入服务内容', trigger: 'blur' },
-          { min: 1, max: 200, message: '长度在 5 到 200 个字符', trigger: 'blur' }
+          { min: 1, max: 200, message: '长度在 5 到 200 个字符', trigger: 'blur' },
+          { validator: notBlankValidator, trigger: 'blur' }
         ],
         details: [
           { required: true, message: '请添加费用明细', trigger: 'blur' },
@@ -139,15 +147,18 @@ export default {
       this.form.details.splice(index, 1)
     },
     sendOrder(formName) {
+      this.creating = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           createJobOrder(this._normalizeData()).then(res => {
             this._resetData()
             this.dialogVisible = false
+            this.creating = false
             this.$message.success('订单创建成功')
             this.$emit('create-success')
           })
         } else {
+          this.creating = false
           return false
         }
       })
@@ -172,7 +183,7 @@ export default {
       const length = this.form.details.length
       for (let i = 0; i < length; i++) {
         const row = this.form.details[i]
-        if (!row.title || !row.price) {
+        if (!row.title.trim() || !row.price || !/^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/.test(row.price)) {
           return true
         }
       }

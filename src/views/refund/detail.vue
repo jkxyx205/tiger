@@ -20,8 +20,9 @@
         <div class="textarea-wrap">
           <label>退款理由:</label><span>{{ refund.description }}</span>
         </div>
-        <div v-if="refund.refundStatus === 1" class="textarea-wrap">
-          <label>拒绝理由:</label><span>{{ refund.remarks }}</span>
+        <div v-if="refund.remarks" class="textarea-wrap">
+          <label v-text="refund.refundStatus === 1 ? '拒绝理由' : '同意理由'" />
+          <span>{{ refund.remarks }}</span>
         </div>
       </div>
       <div class="job-master-container-footer">
@@ -78,21 +79,25 @@
       title=""
       :visible.sync="dialogVisible"
       width="800px"
+      @close="form.remarks = ''"
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="拒绝理由" prop="remarks">
+        <div v-show="dialogOpt">
+          <h4 style="color:#ff4949;">注意：累计退款额已经超出订单金额，请填写同意退款理由</h4>
+        </div>
+        <el-form-item :label="dialogLabel" prop="remarks">
           <el-input v-model="form.remarks" type="textarea" :autosize="{ minRows: 3, maxRows: 5 }" maxlength="250" show-word-limit />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="reject('form')">确 定</el-button>
+        <el-button type="primary" :load="loading" :disabled="form.remarks.trim().length <= 0" @click="action('form')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { findDetailById, ok, reject, finshed } from '@/api/platform/service/refund'
+import { findDetailById, refundCheck, ok, reject, finshed } from '@/api/platform/service/refund'
 import Log from '@/components/Log'
 import { mapGetters } from 'vuex'
 import { list } from '@/api/log'
@@ -104,6 +109,9 @@ export default {
     return {
       id: this.$route.params.id,
       dialogVisible: false,
+      dialogLabel: '',
+      dialogOpt: '',
+      loading: false,
       form: {
         remarks: ''
       },
@@ -114,7 +122,7 @@ export default {
       },
       rules: {
         remarks: [
-          { required: true, message: '请输入拒绝提款的理由', trigger: 'blur' },
+          { required: true, message: '请输入的理由', trigger: 'blur' },
           { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
         ]
       },
@@ -135,26 +143,44 @@ export default {
   },
   methods: {
     ok() {
-      this.$confirm('确认退款吗？', '提示', {
-        type: 'warning'
-      }).then(() => {
-        ok(this.id).then(res => {
-          this._commonAction(res.data)
-        })
+      refundCheck(this.id).then(res => {
+        if (!res.data) { // 累计退款额超过支付金额
+          this.dialogLabel = '同意理由'
+          this.dialogOpt = 1
+          this.dialogVisible = true
+        } else { // 正常退款
+          this.$confirm('确认退款吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            ok(this.id, null).then(res => {
+              this._commonAction(res.data)
+            })
+          }).catch(() => {})
+        }
       })
     },
     rejectDialog() {
+      this.dialogLabel = '拒绝理由'
+      this.dialogOpt = 0
       this.dialogVisible = true
     },
-    reject(formName) {
+    action(formName) {
+      this.loading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          reject(this.id, this.form.remarks).then(res => {
-            this.refund.remarks = this.form.remarks
-            this.dialogVisible = false
-            this._commonAction(res.data)
-          })
+          if (this.dialogOpt) { // 同意退款
+            ok(this.id, this.form.remarks).then(res => {
+              this.refund.remarks = this.form.remarks
+              this._commonAction(res.data)
+            })
+          } else { // 拒绝退款
+            reject(this.id, this.form.remarks).then(res => {
+              this.refund.remarks = this.form.remarks
+              this._commonAction(res.data)
+            })
+          }
         } else {
+          this.loading = false
           return false
         }
       })
@@ -166,6 +192,8 @@ export default {
       })
     },
     _commonAction(status) {
+      this.dialogVisible = false
+      this.loading = false
       this.refund.refundStatus = status
       this._refreshLog()
       this.$message({

@@ -7,10 +7,20 @@ export function findDetailById(id) {
   })
 }
 
-export function ok(id) {
+export function refundCheck(id) {
+  return request({
+    url: `/api/tiger/platform/refund/${id}/opt/refundCheck`,
+    method: 'get'
+  })
+}
+
+export function ok(id, remarks) {
   return request({
     url: `/api/tiger/platform/refund/${id}/opt/ok`,
-    method: 'put'
+    method: 'put',
+    data: {
+      remarks: remarks
+    }
   })
 }
 

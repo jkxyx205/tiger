@@ -25,6 +25,11 @@
             </li>
           </ul>
         </div>
+        <div class="data-item view-link-container">
+          <label>预览链接:</label>
+          <a v-if="deploy.viewLink" class="view-link" :href="deploy.viewLink" target="_blank">{{ deploy.viewLink }}</a>
+          <span v-else>-</span>
+        </div>
       </div>
       <div class="job-master-container-footer">
         <div class="data-item">
@@ -125,6 +130,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/platform/service/deploy.scss";
+.view-link-container {
+  margin-top: 8px;
+  .view-link {
+    color: #1890ff;
+  }
+}
 
 .job-detail-container {
   padding: 30px 20px;

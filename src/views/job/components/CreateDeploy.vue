@@ -12,10 +12,13 @@
         <el-form-item>
           <file-upload ref="fileUpload" />
         </el-form-item>
+        <el-form-item label="预览链接" prop="viewLink">
+          <el-input v-model="form.viewLink" type="text" placeholder="请输入预览链接,如http://www.etmode.com" />
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button :loading="saving" :disabled="this.form.description.trim().length <= 0" type="primary" @click="sendDeploy('form')">创 建</el-button>
+        <el-button :loading="saving" :disabled="form.description.trim().length <= 0" type="primary" @click="sendDeploy('form')">创 建</el-button>
       </span>
     </el-dialog>
   </div>
@@ -39,11 +42,15 @@ export default {
       saving: false,
       form: {
         description: '',
+        viewLink: '',
         attachments: ''
       },
       rules: {
         description: [
           { required: true, message: '部署内容不能为空', trigger: 'blur' }
+        ],
+        viewLink: [
+          { type: 'url', message: '请输入正确的链接地址', trigger: 'blur' }
         ]
       }
     }

@@ -91,7 +91,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :load="loading" :disabled="form.remarks.trim().length <= 0" @click="action('form')">确 定</el-button>
+        <el-button type="primary" :load="saving" :disabled="form.remarks.trim().length <= 0" @click="action('form')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -111,7 +111,7 @@ export default {
       dialogVisible: false,
       dialogLabel: '',
       dialogOpt: '',
-      loading: false,
+      saving: false,
       form: {
         remarks: ''
       },
@@ -165,7 +165,6 @@ export default {
       this.dialogVisible = true
     },
     action(formName) {
-      this.loading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.dialogOpt) { // 同意退款
@@ -180,7 +179,6 @@ export default {
             })
           }
         } else {
-          this.loading = false
           return false
         }
       })
@@ -193,7 +191,7 @@ export default {
     },
     _commonAction(status) {
       this.dialogVisible = false
-      this.loading = false
+      this.saving = false
       this.refund.refundStatus = status
       this._refreshLog()
       this.$message({

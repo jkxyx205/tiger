@@ -147,9 +147,9 @@ export default {
       this.form.details.splice(index, 1)
     },
     sendOrder(formName) {
-      this.creating = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.creating = true
           createJobOrder(this._normalizeData()).then(res => {
             this._resetData()
             this.dialogVisible = false
@@ -158,7 +158,6 @@ export default {
             this.$emit('create-success')
           })
         } else {
-          this.creating = false
           return false
         }
       })

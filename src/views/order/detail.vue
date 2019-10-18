@@ -52,7 +52,7 @@
         <div class="data-item">
           <label>创建时间:</label><span>{{ order.createDate | parseTime }}</span>
         </div>
-        <div class="pull-right">
+        <div class="pull-right" style="margin-right: -24px;">
           <div class="data-item">
             <label>支付时间:</label><span>{{ order.payDate | parseTime }}</span>
           </div>

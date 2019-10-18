@@ -18,34 +18,34 @@
 .circle-refund-status-0 {
   @extend %circle-status;
   &:before {
-    background: #67C23A;
+    background: #4DC600;
   }
 }
 
 .circle-refund-status-1 {
   @extend %circle-status;
   &:before {
-    background: #909399;    
+    background: #fC544C;    
   }
 }
 
 .circle-refund-status-2 {
   @extend %circle-status;
   &:before {
-    background: #409EFF;
+    background: #516FEA;
   }
 }
 
 .circle-refund-status-3 {
   @extend %circle-status;
   &:before {
-    background: #909399;    
+    background: #A3AAC3;    
   }
 }
 
 .circle-refund-status-4 {
   @extend %circle-status;
   &:before {
-    background: #909399;
+    background: #A3AAC3;
   }
 }

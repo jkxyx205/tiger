@@ -35,7 +35,7 @@
         <div class="data-item">
           <label>创建时间:</label><span>{{ refund.createDate | parseTime }}</span>
         </div>
-        <div class="pull-right">
+        <div class="pull-right" style="margin-right: -24px;">
           <div class="data-item">
             <label>退款时间:</label><span>{{ refund.paidDate | parseTime }}</span>
           </div>
@@ -123,7 +123,7 @@ export default {
       rules: {
         remarks: [
           { required: true, message: '请输入的理由', trigger: 'blur' },
-          { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
+          { min: 1, max: 250, message: '长度在 1 到 250 个字符', trigger: 'blur' }
         ]
       },
       activeName: 'log'

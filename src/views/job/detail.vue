@@ -38,7 +38,7 @@
         <div class="data-item">
           <label>所属公司:</label><span>{{ job.groupName }}</span>
         </div>
-        <div class="pull-right">
+        <div class="pull-right" style="margin-right: -24px;">
           <div class="data-item">
             <label>提交人:</label><span>{{ job.creatorName }}</span>
           </div>

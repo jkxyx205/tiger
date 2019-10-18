@@ -38,7 +38,7 @@
         <div class="data-item">
           <label>管理员:</label><span>{{ deploy.adminName }}</span>
         </div>
-        <div class="pull-right">
+        <div class="pull-right" style="margin-right: -24px;">
           <div class="data-item">
             <label>创建时间:</label><span>{{ deploy.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </div>
@@ -88,8 +88,7 @@ export default {
   },
   computed: {
     over() {
-      // return this.deploy.deployStatus === 0 || this.deploy.deployStatus === 1 || this.deploy.deployStatus === 2
-      return true // 任何时候都能反馈
+      return this.deploy.deployStatus === 0 || this.deploy.deployStatus === 2
     }
   },
   created() {

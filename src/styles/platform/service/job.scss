@@ -18,34 +18,34 @@
 .circle-job-status-0 {
   @extend %circle-job-status;
   &:before {
-    background: #67C23A;
+    background: #4DC600;
   }
 }
 
 .circle-job-status-1 {
   @extend %circle-job-status;
   &:before {
-    background: #409EFF;
+    background: #516FEA;
   }
 }
 
 .circle-job-status-2 {
   @extend %circle-job-status;
   &:before {
-    background: #409EFF;
+    background: #516FEA;
   }
 }
 
 .circle-job-status-3 {
   @extend %circle-job-status;
   &:before {
-    background: #909399;
+    background: #A3AAC3;
   }
 }
 
 .circle-job-status-4 {
   @extend %circle-job-status;
   &:before {
-    background: #909399;
+    background: #A3AAC3;
   }
 }

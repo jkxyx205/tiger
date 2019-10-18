@@ -7,7 +7,7 @@
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="部署内容" prop="description">
-          <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="请输入部署内容" />
+          <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" maxlength="1000" placeholder="请输入部署内容" show-word-limit />
         </el-form-item>
         <el-form-item>
           <file-upload ref="fileUpload" />

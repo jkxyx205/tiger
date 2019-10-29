@@ -45,7 +45,7 @@
           <span :class="'circle-order-status-' + row.orderStatus">{{ row.orderStatus | orderStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="price" label="价格(元)" width="100" align="center" />
+      <el-table-column prop="price" label="价格(元)" width="100" align="right" />
       <el-table-column label="操作" align="center" width="90px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <router-link :to="'/service/order/detail/'+scope.row.id">

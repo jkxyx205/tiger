@@ -13,7 +13,7 @@
           <file-upload ref="fileUpload" />
         </el-form-item>
         <el-form-item label="预览链接" prop="viewLink">
-          <el-input v-model="form.viewLink" type="text" placeholder="请输入预览链接,如http://www.etmode.com" />
+          <el-input v-model="form.viewLink" type="text" placeholder="请输入预览链接,如http://www.etmode.com" maxlength="255" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

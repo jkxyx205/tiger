@@ -45,6 +45,7 @@ export default {
       return this._normalizeAttachments()
     },
     clearFiles() {
+      this.fileList = []
       return this.$refs.upload.clearFiles()
     },
     isAllUpload() { // 判断是否所有的文件都上传成功

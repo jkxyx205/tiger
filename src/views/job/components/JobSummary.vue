@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="job-master-container-body" style="background: #fff;">
-      <div class="data-item" style="white-space: normal; line-height: 1.5;">
+      <div class="data-item" style="white-space: normal; line-height: 1.5;word-break: break-all;">
         <label>问题描述:</label><span>{{ job.description }}</span>
       </div>
     </div>

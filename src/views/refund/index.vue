@@ -40,7 +40,7 @@
           <span :class="'circle-refund-status-' + row.refundStatus">{{ row.refundStatus | refundStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="price" label="退款金额(元)" width="100" align="center" />
+      <el-table-column prop="price" label="退款金额(元)" width="100" align="right" />
       <el-table-column label="操作" align="center" width="90px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <router-link :to="'/service/refund/detail/'+scope.row.id">

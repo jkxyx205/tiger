@@ -43,7 +43,7 @@
               prop="price"
               label="价格"
               width="100"
-              align="center"
+              align="right"
             >
               <template slot-scope="{ row }">
                 <input v-model="row.price" class="table-input" type="number" maxlength="5" required placeholder="价格(必填)">

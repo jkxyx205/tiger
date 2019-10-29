@@ -33,12 +33,12 @@
     >
       <el-table-column prop="id" label="工单编号" align="center" width="200" />
       <el-table-column prop="title" label="服务描述" />
-      <el-table-column label="工服类型" width="100px" align="center">
+      <el-table-column label="工服类型" width="100px" align="left">
         <template slot-scope="{row}">
           <span>{{ row.jobType | type() }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="120px" align="center">
+      <el-table-column label="状态" width="120px" align="left">
         <template slot-scope="{row}">
           <span :class="'circle-job-status-' + row.jobStatus">{{ row.jobStatus | status() }}</span>
         </template>

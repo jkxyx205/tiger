@@ -38,6 +38,7 @@
               prop="price"
               label="价格(元)"
               width="100"
+              align="right"
             />
           </el-table>
         </div>
@@ -90,6 +91,7 @@
                 <el-table-column
                   prop="price"
                   label="退款金额"
+                  align="right"
                 />
                 <el-table-column
                   label="申请时间"

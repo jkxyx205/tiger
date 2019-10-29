@@ -20,7 +20,7 @@
         prop="price"
         label="价格(元)"
         width="120"
-        align="center"
+        align="right"
       />
       <el-table-column
         prop="orderStatus"

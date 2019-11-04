@@ -18,7 +18,7 @@
 .circle-job-status-0 {
   @extend %circle-job-status;
   &:before {
-    background: #4DC600;
+    background: #516FEA;
   }
 }
 
@@ -32,14 +32,14 @@
 .circle-job-status-2 {
   @extend %circle-job-status;
   &:before {
-    background: #516FEA;
+    background: #FF9038;
   }
 }
 
 .circle-job-status-3 {
   @extend %circle-job-status;
   &:before {
-    background: #A3AAC3;
+    background: #4DC600;
   }
 }
 

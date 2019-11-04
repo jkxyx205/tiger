@@ -13,7 +13,7 @@
           <span>{{ job.groupName }}</span>
         </el-form-item>
         <el-form-item label="服务内容" prop="description">
-          <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="填写服务内容" />
+          <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8}" maxlength="1000" placeholder="填写服务内容" />
         </el-form-item>
         <el-form-item label="费用明细" prop="details">
           <el-table

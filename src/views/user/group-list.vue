@@ -24,7 +24,7 @@
       cell-class-name="tb-cell"
       @sort-change="sort"
     >
-      <el-table-column prop="name" label="企业名称" />
+      <el-table-column prop="name" label="企业名称" :show-overflow-tooltip="true" />
       <el-table-column label="企业LOGO" width="260px" align="center">
         <template slot-scope="{row}">
           <img v-lazy="row.logo" alt="" style="width: 23px;">
@@ -203,7 +203,4 @@ export default {
 }
 </style>
 <style>
-.tb-cell .cell {
-  white-space: nowrap;
-}
 </style>

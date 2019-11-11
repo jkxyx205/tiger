@@ -58,8 +58,7 @@ import Tinymce from '@/components/Tinymce'
 import { Message } from 'element-ui'
 import { sendMessage } from '@/api/message'
 import CBMapping from '@/utils/cpn-business-mapping'
-import { list } from '@/api/group'
-import { dict } from '@/api/group'
+import { list, dict } from '@/api/group'
 
 export default {
   name: 'Message',

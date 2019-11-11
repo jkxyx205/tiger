@@ -9,6 +9,14 @@
           <el-option v-for="(value, key) in dataSource.status" :key="key" :label="value" :value="key" />
         </el-select>
       </el-form-item>
+      <el-form-item prop="groupId">
+        <el-select v-model="queryModel.groupId" style="width: 140px" class="filter-item" placeholder="所属公司" @change="handleFilter">
+          <el-option v-for="group in dataSource.groups" :key="group.id" :label="group.name" :value="group.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="keywords">
+        <el-input v-model="queryModel.keywords" placeholder="关键字" style="width: 200px;" class="filter-item" />
+      </el-form-item>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-waves class="filter-item" @click="resetForm('queryModel')">重置</el-button>
     </el-form>
@@ -24,8 +32,8 @@
       @sort-change="sort"
     >
       <el-table-column prop="id" label="部署单编号" align="center" width="150" />
-      <el-table-column prop="title" label="部署内容" />
-      <el-table-column prop="groupName" label="所属公司" width="160px" />
+      <el-table-column prop="title" label="部署内容" :show-overflow-tooltip="true" />
+      <el-table-column prop="groupName" label="所属公司" width="160px" :show-overflow-tooltip="true" />
       <el-table-column prop="updateDate" label="更新时间" width="160px" align="center" sortable="custome">
         <template slot-scope="{row}">
           <span>{{ row.updateDate | parseTime }}</span>
@@ -55,6 +63,7 @@ import * as Dict from '@/utils/dictionary-getter'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { changeStatus } from '@/api/user'
+import { list } from '@/api/group'
 
 export default {
   name: 'Deploy',
@@ -67,11 +76,14 @@ export default {
       total: 0,
       listLoading: true,
       dataSource: {
-        status: Dict.getData(Dict.DEPLOY_STATUS)
+        status: Dict.getData(Dict.DEPLOY_STATUS),
+        groups: []
       },
       queryModel: {
         deployStatus: '',
         id: '',
+        groupId: '',
+        keywords: '',
         page: 1,
         size: 10,
         sidx: 'updateDate',
@@ -83,6 +95,10 @@ export default {
     this.$nextTick(() => {
       this.listQuery = new ListQuery('/api/tiger/platform/deploy')
       this.query()
+
+      list().then(res => {
+        this.dataSource.groups = res.data.rows
+      })
     })
   },
   methods: {
@@ -124,7 +140,4 @@ export default {
 }
 </style>
 <style>
-.tb-cell .cell {
-  white-space: nowrap;
-}
 </style>

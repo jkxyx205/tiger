@@ -9,6 +9,14 @@
           <el-option v-for="(value, key) in dataSource.status" :key="key" :label="value" :value="key" />
         </el-select>
       </el-form-item>
+      <el-form-item prop="groupId">
+        <el-select v-model="queryModel.groupId" style="width: 140px" class="filter-item" placeholder="所属公司" @change="handleFilter">
+          <el-option v-for="group in dataSource.groups" :key="group.id" :label="group.name" :value="group.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="keywords">
+        <el-input v-model="queryModel.keywords" placeholder="关键字" style="width: 200px;" class="filter-item" />
+      </el-form-item>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-waves class="filter-item" @click="resetForm('queryModel')">重置</el-button>
     </el-form>
@@ -23,8 +31,8 @@
       cell-class-name="tb-cell"
     >
       <el-table-column prop="id" label="退款编号" align="center" width="150" />
-      <el-table-column prop="title" label="退款理由" />
-      <el-table-column prop="groupName" label="所属公司" width="160px" />
+      <el-table-column prop="title" label="退款理由" :show-overflow-tooltip="true" />
+      <el-table-column prop="groupName" label="所属公司" width="160px" :show-overflow-tooltip="true" />
       <el-table-column label="申请时间" width="160px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.createDate | parseTime }}</span>
@@ -60,6 +68,7 @@ import * as Dict from '@/utils/dictionary-getter'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { changeStatus } from '@/api/user'
+import { list } from '@/api/group'
 
 export default {
   name: 'Refund',
@@ -72,10 +81,13 @@ export default {
       total: 0,
       listLoading: true,
       dataSource: {
-        status: Dict.getData(Dict.REFUND_STATUS)
+        status: Dict.getData(Dict.REFUND_STATUS),
+        groups: []
       },
       queryModel: {
         refundStatus: '',
+        groupId: '',
+        keywords: '',
         id: '',
         page: 1,
         size: 10
@@ -86,6 +98,10 @@ export default {
     this.$nextTick(() => {
       this.listQuery = new ListQuery('/api/tiger/platform/refund')
       this.query()
+
+      list().then(res => {
+        this.dataSource.groups = res.data.rows
+      })
     })
   },
   methods: {
@@ -122,7 +138,4 @@ export default {
 }
 </style>
 <style>
-.tb-cell .cell {
-  white-space: nowrap;
-}
 </style>

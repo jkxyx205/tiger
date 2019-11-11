@@ -38,7 +38,7 @@
           <span>{{ row.sex | sex() }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="signature" label="签名">
+      <el-table-column prop="signature" label="签名" :show-overflow-tooltip="true">
         <template slot-scope="{row}">
           <span :title="row.signature">{{ row.signature }}</span>
         </template>
@@ -146,7 +146,4 @@ export default {
 }
 </style>
 <style>
-.tb-cell .cell {
-  white-space: nowrap;
-}
 </style>

@@ -27,12 +27,11 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
       cell-class-name="tb-cell"
       @sort-change="sort"
     >
       <el-table-column prop="id" label="工单编号" align="center" width="200" />
-      <el-table-column prop="title" label="服务描述" />
+      <el-table-column prop="title" label="服务描述" :show-overflow-tooltip="true" />
       <el-table-column label="工服类型" width="100px" align="left">
         <template slot-scope="{row}">
           <span>{{ row.jobType | type() }}</span>
@@ -137,7 +136,4 @@ export default {
 }
 </style>
 <style>
-.tb-cell .cell {
-  white-space: nowrap;
-}
 </style>

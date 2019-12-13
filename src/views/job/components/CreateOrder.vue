@@ -88,7 +88,7 @@ export default {
   data() {
     const validateDetail = (rule, value, callback) => {
       if (this._checkEmptyError()) {
-        callback(new Error('1. 费用明细“费用名称”和“价格”是必填项目; 2. ”价格”必须是大于0的数字，最多2为小数'))
+        callback(new Error('1. 费用明细“费用名称”和“价格”是必填项目; 2. ”价格”必须是大于0的数字，最多2位小数'))
       }
       callback()
     }

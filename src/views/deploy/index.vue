@@ -33,7 +33,7 @@
     >
       <el-table-column prop="id" label="部署单编号" align="center" width="150" />
       <el-table-column prop="title" label="部署内容" :show-overflow-tooltip="true" />
-      <el-table-column prop="groupName" label="所属公司" width="160px" :show-overflow-tooltip="true" />
+      <el-table-column prop="groupName" label="所属公司" :width="groupColumnWidth" :show-overflow-tooltip="true" />
       <el-table-column prop="updateDate" label="更新时间" width="160px" align="center" sortable="custome">
         <template slot-scope="{row}">
           <span>{{ row.updateDate | parseTime }}</span>
@@ -64,6 +64,7 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { changeStatus } from '@/api/user'
 import { list } from '@/api/group'
+import Bowser from 'bowser'
 
 export default {
   name: 'Deploy',
@@ -75,6 +76,7 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      groupColumnWidth: 160,
       dataSource: {
         status: Dict.getData(Dict.DEPLOY_STATUS),
         groups: []
@@ -99,6 +101,11 @@ export default {
       list().then(res => {
         this.dataSource.groups = res.data.rows
       })
+
+      const browser = Bowser.getParser(window.navigator.userAgent)
+      if (browser.getBrowser().name === 'Safari') {
+        this.groupColumnWidth = 'auto'
+      }
     })
   },
   methods: {
@@ -138,6 +145,4 @@ export default {
 .table-container {
   padding: 30px 20px;
 }
-</style>
-<style>
 </style>

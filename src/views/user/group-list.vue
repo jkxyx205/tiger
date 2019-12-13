@@ -30,7 +30,7 @@
           <img v-lazy="row.logo" alt="" style="width: 23px;">
         </template>
       </el-table-column>
-      <el-table-column label="管理员" width="180px" align="center">
+      <el-table-column label="管理员" width="180px" align="center" :show-overflow-tooltip="true">
         <template slot-scope="{row}">
           <el-link type="info" @click="userInfo(row.adminUserId)">
             <span :title="row.adminName">{{ row.adminName }}</span>

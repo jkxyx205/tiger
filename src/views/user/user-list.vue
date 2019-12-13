@@ -27,7 +27,7 @@
       @sort-change="sort"
     >
       <el-table-column prop="mobile" label="帐号" align="center" width="120" />
-      <el-table-column prop="nickname" label="名字" width="150px" align="center" />
+      <el-table-column prop="nickname" label="名字" width="150px" align="center" :show-overflow-tooltip="true" />
       <el-table-column label="头像" width="60px" align="center">
         <template slot-scope="{row}">
           <img v-lazy="row.avatar" alt="" style="width: 23px;">

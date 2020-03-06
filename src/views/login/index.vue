@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="logo-container">
-          <img src="http://web.etmode.com/img/dianyan.24ae013f.png" alt="">
+          <img src="http://devyean.com/img/dianyan.24ae013f.png" alt="">
       </div>
       <div class="title-container">
         <h3 class="title">点研智能平台管理</h3>

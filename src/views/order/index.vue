@@ -10,8 +10,13 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="orderStatus">
-        <el-select v-model="queryModel.orderStatus" style="width: 140px" class="filter-item" placeholder="状态" @change="handleFilter">
-          <el-option v-for="(value, key) in dataSource.status" :key="key" :label="value" :value="key" />
+        <el-select v-model="queryModel.orderStatus" style="width: 140px" class="filter-item" placeholder="订单状态" @change="handleFilter">
+          <el-option v-for="(value, key) in dataSource.orderStatus" :key="key" :label="value" :value="key" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="invoiceStatus">
+        <el-select v-model="queryModel.invoiceStatus" style="width: 140px" class="filter-item" placeholder="发票状态" @change="handleFilter">
+          <el-option v-for="(value, key) in dataSource.invoiceStatus" :key="key" :label="value" :value="key" />
         </el-select>
       </el-form-item>
       <el-form-item prop="groupId">
@@ -53,9 +58,14 @@
           <span>{{ row.payDate | parseTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="120" align="center">
+      <el-table-column label="订单状态" width="120" align="center">
         <template slot-scope="{row}">
           <span :class="'circle-order-status-' + row.orderStatus">{{ row.orderStatus | orderStatus }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="开票状态" width="120" align="center">
+        <template slot-scope="{row}">
+          <span :class="'circle-invoice-status-' + row.invoiceStatus">{{ row.invoiceStatus | invoiceStatus }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="price" label="价格(元)" width="100" align="right" />
@@ -91,8 +101,10 @@ export default {
       total: 0,
       listLoading: true,
       dataSource: {
-        status: Dict.getData(Dict.ORDER_STATUS),
+        orderStatus: Dict.getData(Dict.ORDER_STATUS),
         orderType: Dict.getData(Dict.ORDER_TYPE),
+        invoiceStatus: Dict.getData(Dict.INVOICE_STATUS),
+        invoiceType: Dict.getData(Dict.INVOICE_TYPE),
         groups: []
       },
       queryModel: {

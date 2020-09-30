@@ -8,6 +8,8 @@ export const ORDER_STATUS = 'ORDER_STATUS_GET'
 
 export const REFUND_STATUS = 'REFUND_STATUS_GET'
 export const DEPLOY_STATUS = 'DEPLOY_STATUS_GET'
+export const INVOICE_STATUS = 'INVOICE_STATUS'
+export const INVOICE_TYPE = 'INVOICE_TYPE'
 
 var mapping = {
   [SEX_TYPE]: {
@@ -39,6 +41,15 @@ var mapping = {
     0: '待支付',
     1: '已支付',
     2: '已作废'
+  },
+  [INVOICE_STATUS]: {
+    0: '未开票',
+    1: '开票中',
+    2: '已开票'
+  },
+  [INVOICE_TYPE]: {
+    0: '个人',
+    1: '企业单位'
   },
   [REFUND_STATUS]: {
     0: '已提交',

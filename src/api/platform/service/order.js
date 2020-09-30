@@ -21,3 +21,10 @@ export function findDetailById(id) {
     method: 'get'
   })
 }
+
+export function finishedInvoice(orderId) {
+  return request({
+    url: `/api/tiger/platform/order/${orderId}/invoice/finished`,
+    method: 'post'
+  })
+}

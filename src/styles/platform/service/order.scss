@@ -35,3 +35,24 @@
     background: #A3AAC3;
   }
 }
+
+.circle-invoice-status-0 {
+  @extend %circle-status;
+  &:before {
+    background: #516FEA;
+  }
+}
+
+.circle-invoice-status-1 {
+  @extend %circle-status;
+  &:before {
+    background: #4DC600;    
+  }
+}
+
+.circle-invoice-status-2 {
+  @extend %circle-status;
+  &:before {
+    background: #A3AAC3;
+  }
+}

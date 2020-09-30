@@ -9,10 +9,14 @@
           <label>类型:</label><span>{{ order.orderType | orderType }}</span>
         </div>
         <div class="data-item">
-          <label>状态:</label><span :class="'circle-order-status-' + order.orderStatus">{{ order.orderStatus | orderStatus }}</span>
+          <label>订单状态:</label><span :class="'circle-order-status-' + order.orderStatus">{{ order.orderStatus | orderStatus }}</span>
+        </div>
+        <div class="data-item">
+          <label>开票状态:</label><span :class="'circle-invoice-status-' + order.invoiceStatus">{{ order.invoiceStatus | invoiceStatus }}</span>
         </div>
         <div class="pull-right operator-bar">
           <!-- <el-button size="small" @click="reDo()">重新处理</el-button> -->
+          <el-button v-if="order.invoiceStatus == 1" type="primary" size="small" @click="popInvoiceDialog">完成开票</el-button>
         </div>
       </div>
       <div class="job-master-container-body">
@@ -130,12 +134,56 @@
         </template>
       </el-tabs>
     </div>
+    <el-dialog
+      title="开票详情"
+      :visible.sync="invoiceDialogVisible"
+      width="500px"
+    >
+      <div class="info-container">
+        <div class="label-info-container">
+          <div>
+            <div class="display-item">
+              <label>抬头类型：</label><div>{{ order.invoiceInfo.invoiceType | invoiceType }}</div>
+            </div>
+            <div class="display-item">
+              <label>发票抬头：</label><div>{{ order.invoiceInfo.title }}</div>
+            </div>
+            <div v-if="order.invoiceInfo.invoiceType === 1" class="display-item">
+              <label>税号：</label><div>{{ order.invoiceInfo.num }}</div>
+            </div>
+            <div class="display-item">
+              <label>邮寄地址：</label><div>{{ order.invoiceInfo.email }}</div>
+            </div>
+            <div v-if="order.invoiceInfo.invoiceType === 1" class="display-item">
+              <label>注册地址：</label><div>{{ order.invoiceInfo.address }}</div>
+            </div>
+            <div v-if="order.invoiceInfo.invoiceType === 1" class="display-item">
+              <label>注册电话：</label><div>{{ order.invoiceInfo.tel }}</div>
+            </div>
+            <div v-if="order.invoiceInfo.invoiceType === 1" class="display-item">
+              <label>开户银行：</label><div>{{ order.invoiceInfo.bankName }}</div>
+            </div>
+            <div v-if="order.invoiceInfo.invoiceType === 1" class="display-item">
+              <label>银行账号：</label><div>{{ order.invoiceInfo.account }}</div>
+            </div>
+            <div class="display-item">
+              <label>备注：</label><div>{{ order.invoiceInfo.remarks }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="finishedInvoice">确认完成</el-button>
+        <el-button @click="invoiceDialogVisible = false">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findDetailById } from '@/api/platform/service/order'
+import { findDetailById, finishedInvoice } from '@/api/platform/service/order'
 import Log from '@/components/Log'
+import { list } from '@/api/log'
 import JobSummary from '@/views/job/components/JobSummary'
 import { mapGetters } from 'vuex'
 
@@ -145,8 +193,11 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      order: {},
-      activeName: 'log'
+      order: {
+        invoiceInfo: {}
+      },
+      activeName: 'log',
+      invoiceDialogVisible: false
     }
   },
   computed: {
@@ -158,6 +209,24 @@ export default {
     findDetailById(this.id).then(res => {
       this.order = res.data
     })
+  },
+  methods: {
+    popInvoiceDialog() {
+      this.invoiceDialogVisible = true
+    },
+    finishedInvoice() {
+      finishedInvoice(this.order.id).then(res => {
+        if (res.success) {
+          this.invoiceDialogVisible = false
+          this.order.invoiceStatus = 2
+          this.$message.success('发票处理成功')
+        }
+      }).then(() => {
+        list(this.order.id).then(res => {
+          this.order.logList = res.data
+        })
+      })
+    }
   }
 }
 </script>
@@ -219,5 +288,32 @@ export default {
 
 .el-tabs--border-card {
   box-shadow: none;
+}
+
+.info-container {
+  .display-item {
+    /* position: relative;
+    margin-left: -80px; */
+    display: flex;
+    margin-bottom: 16px;
+    line-height: 1.6;
+    label {
+      width: 80px;
+      /* position: absolute; */
+    }
+    div {
+      flex: 1;
+      /* position: absolute;
+      top: 0;
+      left: 80px;
+      white-space: nowrap; */
+      /* margin-left: 80px; */
+    }
+  }
+  .label-info-container {
+    display: flex;
+    padding: 0 16%;
+    justify-content: center;
+  }
 }
 </style>

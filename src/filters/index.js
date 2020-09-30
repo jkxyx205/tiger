@@ -76,6 +76,14 @@ export function orderType(value) {
   return Dict.getLabel(Dict.ORDER_TYPE, value)
 }
 
+export function invoiceStatus(value) {
+  return Dict.getLabel(Dict.INVOICE_STATUS, value)
+}
+
+export function invoiceType(value) {
+  return Dict.getLabel(Dict.INVOICE_TYPE, value)
+}
+
 export function jobStatus(value) {
   return Dict.getLabel(Dict.JOB_STATUS_TYPE, value)
 }

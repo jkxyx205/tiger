@@ -1,0 +1,51 @@
+%circle-status {
+  $circle-width: 8px;
+  position: relative;
+  display: inline-block;
+  padding-left: $circle-width * 1.6;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: $circle-width;
+    height: $circle-width;
+    border-radius: 50%;
+  }
+}
+
+.circle-site-status-0 {
+  @extend %circle-status;
+  &:before {
+    background: #516FEA;    
+  }
+}
+
+.circle-site-status-1 {
+  @extend %circle-status;
+  &:before {
+    background: #4DC600;    
+  }
+}
+
+.circle-site-status-2 {
+  @extend %circle-status;
+  &:before {
+    background: #fC544C;
+  }
+}
+
+.circle-site-status-3 {
+  @extend %circle-status;
+  &:before {
+    background: #fC544C;    
+  }
+}
+
+.circle-site-status-4 {
+  @extend %circle-status;
+  &:before {
+    background: #A3AAC3;
+  }
+}

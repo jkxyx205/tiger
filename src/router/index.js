@@ -121,30 +121,23 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/component',
+    path: '/cpn',
     component: Layout,
     alwaysShow: true,
     meta: { title: '组件管理', icon: 'tree', noCache: true },
     children: [
       {
-        path: 'site',
-        alwaysShow: true,
-        name: 'Site',
+        path: 'sitemgt',
         meta: { title: '企业建站', icon: 'edit', noCache: true },
-        children: [
-          {
-            path: 'image',
-            component: () => import('@/views/icons/index'),
-            name: 'Image',
-            meta: { title: '图库管理', icon: 'edit', noCache: true }
-          }
-        ]
-      },
-      {
-        path: 'oa',
-        component: () => import('@/views/icons/index'),
-        name: 'OA',
-        meta: { title: 'OA', icon: 'edit', noCache: true }
+        component: () => import('@/views/cpn/site')
+        // children: [ // https://blog.csdn.net/u014586621/article/details/108614247
+        //   {
+        //     path: 'site',
+        //     component: () => import('@/views/cpn/site/index'),
+        //     name: 'Site',
+        //     meta: { title: '站点列表', icon: 'edit', noCache: true }
+        //   }
+        // ]
       }
     ]
   },

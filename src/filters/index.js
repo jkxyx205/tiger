@@ -72,6 +72,10 @@ export function orderStatus(value) {
   return Dict.getLabel(Dict.ORDER_STATUS, value)
 }
 
+export function siteStatus(value) {
+  return Dict.getLabel(Dict.SITE_STATUS, value)
+}
+
 export function orderType(value) {
   return Dict.getLabel(Dict.ORDER_TYPE, value)
 }

@@ -11,6 +11,8 @@ export const DEPLOY_STATUS = 'DEPLOY_STATUS_GET'
 export const INVOICE_STATUS = 'INVOICE_STATUS'
 export const INVOICE_TYPE = 'INVOICE_TYPE'
 
+export const SITE_STATUS = 'SITE_STATUS'
+
 var mapping = {
   [SEX_TYPE]: {
     0: '男',
@@ -64,6 +66,13 @@ var mapping = {
     2: '部署中',
     3: '已拒绝',
     4: '已完成'
+  },
+  [SITE_STATUS]: {
+    0: '试用中',
+    1: '运行中',
+    2: '停止',
+    3: '停止',
+    4: '过期'
   }
 }
 

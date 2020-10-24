@@ -1,18 +1,16 @@
 <template>
   <div class="table-container">
-    <!-- <el-form ref="queryModel" :inline="true" :model="queryModel" @keyup.enter.native="handleFilter">
-      <el-form-item prop="name">
-        <el-input v-model="queryModel.name" placeholder="企业名称" style="width: 200px;" class="filter-item" />
+    <el-form ref="queryModel" :inline="true" :model="queryModel" @keyup.enter.native="handleFilter">
+      <el-form-item prop="id">
+        <el-input v-model="queryModel.id" placeholder="站点ID" style="width: 200px;" class="filter-item" />
       </el-form-item>
-      <el-form-item prop="locked">
-        <el-select v-model="queryModel.locked" style="width: 140px" class="filter-item" @change="handleFilter">
-          <el-option key="-1" label="全部" value="" />
-          <el-option v-for="(value, key) in dataSource.status" :key="key" :label="value" :value="key" />
-        </el-select>
+
+      <el-form-item prop="nickname">
+        <el-input v-model="queryModel.nickname" placeholder="创建人" style="width: 200px;" class="filter-item" />
       </el-form-item>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-waves class="filter-item" @click="resetForm('queryModel')">重置</el-button>
-    </el-form> -->
+    </el-form>
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -25,6 +23,11 @@
     >
       <el-table-column prop="id" label="站点ID" width="100px" />
       <el-table-column prop="title" label="站点名称" :show-overflow-tooltip="true" width="200px" />
+      <el-table-column prop="url" label="域名" width="200px">
+        <template slot-scope="{row}">
+          <a :href="row.url" target="_blank">{{ row.url }}</a>
+        </template>
+      </el-table-column>
       <el-table-column prop="userName" label="创建人" :show-overflow-tooltip="true" />
       <el-table-column prop="groupName" label="所属公司" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" width="200px" align="center" prop="createDate">
@@ -85,7 +88,7 @@ import * as siteAPI from '@/api/cpn/site'
 import * as Dict from '@/utils/dictionary-getter'
 
 export default {
-  name: 'Site',
+  name: 'SiteMgt',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -105,7 +108,9 @@ export default {
       },
       queryModel: {
         page: 1,
-        size: 10
+        size: 10,
+        id: '',
+        nickname: ''
       }
     }
   },
@@ -117,6 +122,9 @@ export default {
   methods: {
     handleFilter() {
       this.query()
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
     },
     query() {
       this.listLoading = true

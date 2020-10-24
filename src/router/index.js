@@ -129,6 +129,7 @@ export const asyncRoutes = [
       {
         path: 'sitemgt',
         meta: { title: '企业建站', icon: 'edit', noCache: true },
+        name: 'SiteMgt',
         component: () => import('@/views/cpn/site')
         // children: [ // https://blog.csdn.net/u014586621/article/details/108614247
         //   {
@@ -138,6 +139,18 @@ export const asyncRoutes = [
         //     meta: { title: '站点列表', icon: 'edit', noCache: true }
         //   }
         // ]
+      }
+    ]
+  },
+  {
+    path: '/syslog',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/syslog/index'),
+        name: 'SysLog',
+        meta: { title: '日志', icon: 'guide', noCache: false }
       }
     ]
   },

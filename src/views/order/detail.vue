@@ -208,6 +208,10 @@ export default {
   created() {
     findDetailById(this.id).then(res => {
       this.order = res.data
+      if (!this.order.invoiceInfo) {
+        this.order.invoiceInfo = {}
+        this.order.invoiceInfo.invoiceType = '0'
+      }
     })
   },
   methods: {
